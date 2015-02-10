@@ -30,6 +30,19 @@ public class Bib2Lod {
         
         //////////// POST-PROCESSING GOES HERE ///////////////
         
+        // TODO For now just define thesis post-processing. Later must expand 
+        // to other types of works. We know that our data consists only of 
+        // thesis records. When we have mixed data, will need to test: the 
+        // bf:Work has a relators:ths, bf:dissertationYear, 
+        // bf:dissertationDegree, bf:dissertationInstitution. The bf:Instance 
+        // has a system number prefixed with "CUThesis."
+        ModelPostProcessor p = new ThesisModelPostProcessor(model);
+        p.process();
+        
+        // *** rdfs.label ***
+        // Check how hard it will be to add rdfs:label during Vitro ingest.
+        // If difficult, just do it here for now. Can move to ingest later.
+       
         
         // Write out the post-processed rdf
         String outfileName = path + args[1];
