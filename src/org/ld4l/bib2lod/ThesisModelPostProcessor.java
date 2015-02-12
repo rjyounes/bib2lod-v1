@@ -3,7 +3,6 @@
  */
 package org.ld4l.bib2lod;
 
-import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.ResIterator;
@@ -21,7 +20,8 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
     }
       
     // TODO Will probably need to subdivide into smaller methods.
-    protected Model process() {
+    @Override
+    protected void doProcessing() {
         Resource resourceBfWork = model.createResource(BFWORK_URI);
         ResIterator bfWorks = model.listResourcesWithProperty(RDF.type, resourceBfWork); 
         while (bfWorks.hasNext()) {
@@ -35,10 +35,9 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
             
         }
         
-        return model;
-    }
-    
+        //return model;
 
+    }
 
 
 }
