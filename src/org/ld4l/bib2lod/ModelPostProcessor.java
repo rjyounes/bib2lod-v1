@@ -61,9 +61,10 @@ abstract class ModelPostProcessor {
     /**
      * Add rdfs:label to any resources in the model that don't have one.
      * 
+     * Needed for Vitro. Should probably be done during Vitro ingest, but it's
+     * not clear at the moment how to hook into the Vitro RDF ingest code.
+     * 
      */
-    // Needed for Vitro. Should probably be done there, but it's not clear at
-    // the moment how to hook into the Vitro RDF ingest code.
     protected void addRdfsLabels() {
         ExtendedIterator<Individual> individuals = ontModel.listIndividuals();
         while (individuals.hasNext()) {

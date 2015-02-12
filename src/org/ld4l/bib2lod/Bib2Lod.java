@@ -41,11 +41,11 @@ public class Bib2Lod {
             }
         }
         
-        // Process the RDF input files and send back a model for printing.
+        // Process the RDF input files and receive a model for printing.
         RDFProcessor p = new RDFProcessor();
         Model unionModel = p.processInputs(streams);
         
-        //Write out the cumulative model to a file.
+        // Write out the cumulative model to a file.
         try {
             OutputStream out = new FileOutputStream(outfile);
             // null = RDF serialization. We may want to be able to specify this
