@@ -25,11 +25,10 @@ class RDFProcessor {
         return unionModel;
     }
     
+    // TODO Not sure why the FileNotFoundException would be thrown here...
     protected OntModel processInput(InputStream in) throws FileNotFoundException {
-        OntModel ontModel = null;
         ModelPostProcessor p = ModelPostProcessorFactory.createModelPostProcessor(in); 
-        ontModel = p.process();
-        return ontModel;               
+        return p.process();              
     }
 
 

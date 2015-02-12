@@ -26,6 +26,8 @@ public class Bib2Lod {
         String readdir = args[0]; 
         String outfile = args[1];
 
+        // Convert the directory of RDF files into a list of input streams
+        // for processing.
         File directory = new File(readdir);
         File[] items = directory.listFiles();
         List<InputStream> streams = new ArrayList<InputStream>();
