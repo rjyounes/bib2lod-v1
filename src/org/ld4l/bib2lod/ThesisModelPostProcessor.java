@@ -3,7 +3,8 @@
  */
 package org.ld4l.bib2lod;
 
-import com.hp.hpl.jena.ontology.OntModel;
+import java.io.InputStream;
+
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -15,13 +16,9 @@ import com.hp.hpl.jena.vocabulary.RDF;
  */
 class ThesisModelPostProcessor extends ModelPostProcessor {
 
-    protected ThesisModelPostProcessor(String infileName) {
-        super(infileName);
-    }
-    
-    protected ThesisModelPostProcessor(OntModel inputModel) {
-        super(inputModel);
-    }
+    protected ThesisModelPostProcessor(InputStream in) {
+        super(in);
+    }    
       
     // TODO Will probably need to subdivide into smaller methods.
     @Override
