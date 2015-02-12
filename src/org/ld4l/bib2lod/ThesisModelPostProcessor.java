@@ -3,7 +3,7 @@
  */
 package org.ld4l.bib2lod;
 
-import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -14,28 +14,30 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  */
 class ThesisModelPostProcessor extends ModelPostProcessor {
+
+    protected ThesisModelPostProcessor(String infileName) {
+        super(infileName);
+    }
     
-    protected ThesisModelPostProcessor(Model model) {
-        super(model);
+    protected ThesisModelPostProcessor(OntModel inputModel) {
+        super(inputModel);
     }
       
     // TODO Will probably need to subdivide into smaller methods.
     @Override
     protected void doProcessing() {
-        Resource resourceBfWork = model.createResource(BFWORK_URI);
-        ResIterator bfWorks = model.listResourcesWithProperty(RDF.type, resourceBfWork); 
+        Resource resourceBfWork = ontModel.createResource(BFWORK_URI);
+        ResIterator bfWorks = ontModel.listResourcesWithProperty(RDF.type, resourceBfWork); 
         while (bfWorks.hasNext()) {
             Resource bfWork = bfWorks.next();
-            Property bfCreatorProperty = model.createProperty(BIBFRAME_NS, "creator");
+            Property bfCreatorProperty = ontModel.createProperty(BIBFRAME_NS, "creator");
             Resource bfCreator = bfWork.getPropertyResourceValue(bfCreatorProperty);
-            Property bfLabelProperty = model.createProperty(BIBFRAME_NS, "label");
+            Property bfLabelProperty = ontModel.createProperty(BIBFRAME_NS, "label");
             String bfLabelValue = bfCreator.getProperty(bfLabelProperty).getString();
-            // Create a foaf:Person with the name of the label
-            
-            
+            // Create a foaf:Person with the name of the label           
         }
         
-        //return model;
+        //return ontmodel;
 
     }
 
