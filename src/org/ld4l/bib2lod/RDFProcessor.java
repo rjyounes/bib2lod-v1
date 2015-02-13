@@ -13,23 +13,15 @@ class RDFProcessor {
     protected OntModel processInputs(List<InputStream> streams) {
         OntModel unionModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);      
         for (InputStream in : streams) {
-            try {
-                OntModel processedModel = processInput(in);
-                unionModel.add(processedModel);
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
+            OntModel processedModel = processInput(in);
+            unionModel.add(processedModel);
         }
         return unionModel;
     }
     
-    // TODO Not sure why the FileNotFoundException would be thrown here...
-    protected OntModel processInput(InputStream in) throws FileNotFoundException {
+    protected OntModel processInput(InputStream in)  {
         ModelPostProcessor p = ModelPostProcessorFactory.createModelPostProcessor(in); 
         return p.process();              
     }
-
 
 }
