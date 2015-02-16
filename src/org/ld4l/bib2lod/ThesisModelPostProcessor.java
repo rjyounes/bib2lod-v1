@@ -3,8 +3,9 @@
  */
 package org.ld4l.bib2lod;
 
-import static org.ld4l.bib2lod.Constants.BFCREATOR_PROPERTY;
+import static org.ld4l.bib2lod.Constants.BF_CREATOR_PROPERTY;
 
+import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Resource;
 
@@ -14,20 +15,30 @@ import com.hp.hpl.jena.rdf.model.Resource;
  */
 class ThesisModelPostProcessor extends ModelPostProcessor {
 
-    protected ThesisModelPostProcessor(OntModel recordModel, Resource bfWork) {
-        super(recordModel, bfWork);
+    protected ThesisModelPostProcessor(
+            OntModel recordModel, Individual bfWork, String baseUri) {
+        super(recordModel, bfWork, baseUri);
     }    
       
-    // TODO Will probably need to subdivide into smaller methods.
-    protected void processWork() {
+    protected void processRecord() {
 
-        Resource bfCreator = bfWork.getPropertyResourceValue(BFCREATOR_PROPERTY);    
-        // Get the literal value of the bfLabel. Then get the String labelValue (getLexicalForm())
-        // How do you get a literal, similar to getPropertyResourceValue()?
-        //Literal bfLabel = bfCreator.getPropertyResourceValue(BFLABEL_PROPERTY); //.getString();
-        // String labelValue = bfLabel.getLexicalString();
-        // Create a foaf:Person with the name of the label           
+        assertionsModel.add(createFoafPersonCreator());
+
+    }
+    
+
+    protected OntModel createFoafPersonCreator() {
+
+        // Find the bf:Person creator of the bf:Work.
+        Resource bfCreator = 
+                bfWork.getPropertyResourceValue(BF_CREATOR_PROPERTY);
         
+        // Get the bf:Person individual from the model.
+        Individual bfPerson = 
+                recordModel.getIndividual(bfCreator.getURI());
+        
+        // Create a corresponding foaf:Person.
+        return createFoafPerson(bfPerson);
     }
 
 }

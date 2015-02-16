@@ -33,7 +33,8 @@ public class Bib2Lod {
         // TODO Use options parser instead of ordered arguments
         String readdir = args[0]; 
         String outfile = args[1];
-
+        String baseUri = args[2];
+         
         // Convert the directory of RDF files into a list of input streams
         // for processing.
         File directory = new File(readdir);
@@ -54,7 +55,7 @@ public class Bib2Lod {
         
         // Process the RDF input files and receive a union model for printing.
         RDFPostProcessor p = new RDFPostProcessor();
-        Model allRecords = p.processRecords(records);
+        Model allRecords = p.processRecords(records, baseUri);
         
         // Write out the union model to a file.
         try {

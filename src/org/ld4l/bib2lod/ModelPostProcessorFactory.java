@@ -1,11 +1,10 @@
 package org.ld4l.bib2lod;
 
-import static org.ld4l.bib2lod.Constants.BFWORK_TYPE;
+import static org.ld4l.bib2lod.Constants.BF_WORK_CLASS;
 
+import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.rdf.model.ResIterator;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
  * Creates a ModelPostProcessor.
@@ -15,11 +14,12 @@ import com.hp.hpl.jena.vocabulary.RDF;
 class ModelPostProcessorFactory  {
    
     protected static ModelPostProcessor createModelPostProcessor(
-            OntModel recordModel) {
+            OntModel recordModel, String baseUri) {
         
         // A single record may include multiple bf:Works: the primary Work may
-        // be related to other Works.    
-        ResIterator bfWorks = recordModel.listResourcesWithProperty(RDF.type, BFWORK_TYPE);         
+        // be related to other Works.  
+        ExtendedIterator<Individual> bfWorks = 
+                recordModel.listIndividuals(BF_WORK_CLASS);         
         
         while (bfWorks.hasNext()) {
             // We're relying on the converter always putting the primary Work
@@ -37,11 +37,11 @@ class ModelPostProcessorFactory  {
             // bf:Work has relators:ths, bf:dissertationYear, 
             // bf:dissertationDegree, bf:dissertationInstitution properties. 
             // The bf:Instance has a system number prefixed with "CUThesis."
-            Resource bfWork = bfWorks.next();
+            Individual bfWork = bfWorks.next();
 
             // Additional Works included in the record are processed with the
             // primary Work, so don't continue iterating through Works.
-            return new ThesisModelPostProcessor(recordModel, bfWork);
+            return new ThesisModelPostProcessor(recordModel, bfWork, baseUri);
         }
         return null;
     }

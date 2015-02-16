@@ -10,14 +10,13 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 class RDFPostProcessor {
     
-    protected Model processRecords(List<InputStream> records) {
+    protected OntModel processRecords(List<InputStream> records, String baseUri) {
         
-        // This might need to be an OntModel...
-        Model allRecords = 
+        OntModel allRecords = 
                 ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM); 
         
         for (InputStream record : records) {
-            OntModel processedRecordModel = processRecord(record);
+            OntModel processedRecordModel = processRecord(record, baseUri);
             // OK to call add if processedRecordModel is null, or test for
             // non-null value first?
             allRecords.add(processedRecordModel);
@@ -26,22 +25,20 @@ class RDFPostProcessor {
         return allRecords;
     }
     
-    protected OntModel processRecord(InputStream record)  {
+    protected OntModel processRecord(InputStream record, String baseUri)  {
         
         OntModel recordModel = 
                 ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         
-        // TODO Take advantage of parameters 2 (base) and 3 (lang) to 
-        // recordModel.read() by allowing optional specification of base URI 
-        // and serialization format as program arguments. Currently relying on 
-        // Model defaults. Null base means there are no relative URIs in the 
-        // input. Could we handle blank nodes if we specify a base??
+        // Third parameter = serialization. Currently using default RDF/XML.
+        // In future may want to specify as commandline option.
         // Default serialization = RDF/XML.
-        recordModel.read(record, null, null);
+        recordModel.read(record, baseUri, null);
         
         ModelPostProcessor p = 
-                ModelPostProcessorFactory.createModelPostProcessor(recordModel);
-        
+                ModelPostProcessorFactory.createModelPostProcessor(
+                        recordModel, baseUri); 
+                               
         return (p != null) ? p.process() : null;
     }
 
