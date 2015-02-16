@@ -1,6 +1,11 @@
 package org.ld4l.bib2lod;
 
-import java.io.InputStream;
+import static org.ld4l.bib2lod.Constants.BFWORK_TYPE;
+
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.ResIterator;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * Creates a ModelPostProcessor.
@@ -8,25 +13,36 @@ import java.io.InputStream;
  *
  */
 class ModelPostProcessorFactory  {
-    
-    /**
-     * Create a model postprocessor for an RDF file and return the postprocessor.
-     * @param file - the input file
-     * @return ModelPostProcessor
-     */
-    protected static ModelPostProcessor createModelPostProcessor(InputStream is) {       
-        // TODO We're side-stepping the question of how to know what type of
-        // preprocessor to create. For now, just define thesis post-processing,
-        // since the current data consists only of thesis records. Later must
-        // expand to other types of records. When we have mixed data, we'll need 
-        // to test for things like: the bf:Work has a relators:ths, 
-        // bf:dissertationYear, bf:dissertationDegree, 
-        // bf:dissertationInstitution. The bf:Instance 
-        // has a system number prefixed with "CUThesis."
-        // *** Does this mean it would be better to process one record at a 
-        // time, so we can figure out its type? Then pass a directory of
-        // records rather than a single file into the application.
-        return new ThesisModelPostProcessor(is);
-    }
+   
+    protected static ModelPostProcessor createModelPostProcessor(
+            OntModel recordModel) {
+        
+        // A single record may include multiple bf:Works: the primary Work may
+        // be related to other Works.    
+        ResIterator bfWorks = recordModel.listResourcesWithProperty(RDF.type, BFWORK_TYPE);         
+        
+        while (bfWorks.hasNext()) {
+            // We're relying on the converter always putting the primary Work
+            // first. However, we could also test local name of the URI, since
+            // for the primary Work it's the bibid, whereas for other Works it's
+            // the primary Work's bibid + "work" + id number (e.g., 
+            // 7852272work35).
+            // TODO For now, we're side-stepping the question of how to know 
+            // what type of record we're post-processing. We will need to 
+            // inspect bfWork to see what kind of work it is, in order to
+            // create the appropriate ModelPostProcessor. For now, just define
+            // thesis post-processing, since the current data set consists only 
+            // of thesis records. Later must expand to other types of records. 
+            // When we have mixed data, we'll need to test for things like: the 
+            // bf:Work has relators:ths, bf:dissertationYear, 
+            // bf:dissertationDegree, bf:dissertationInstitution properties. 
+            // The bf:Instance has a system number prefixed with "CUThesis."
+            Resource bfWork = bfWorks.next();
 
+            // Additional Works included in the record are processed with the
+            // primary Work, so don't continue iterating through Works.
+            return new ThesisModelPostProcessor(recordModel, bfWork);
+        }
+        return null;
+    }
 }

@@ -17,7 +17,15 @@ public class Bib2Lod {
     /**
      * Read in program arguments, pass off for processing, and write out
      * resulting RDF.
+     * 
+     * Note: we may want to process a single file of multiple records (or the
+     * ability to do either, depending on whether arg[0] is a file or a 
+     * directory. For now we are just handling a directory containing one
+     * record per file.
+     * 
      * @param args
+     * args[0]: the directory of input RDF files
+     * args[1]: the path to the file for writing output RDF
      */
     public static void main(String[] args) {
         
@@ -29,13 +37,14 @@ public class Bib2Lod {
         // Convert the directory of RDF files into a list of input streams
         // for processing.
         File directory = new File(readdir);
+        // Despite the name, lists both files and directories.
         File[] items = directory.listFiles();
-        List<InputStream> streams = new ArrayList<InputStream>();
+        List<InputStream> records = new ArrayList<InputStream>();
 
         for (File file : items) {
             if (file.isFile()) {
                 try {
-                    streams.add(new FileInputStream(file));
+                    records.add(new FileInputStream(file));
                 } catch (FileNotFoundException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -43,16 +52,17 @@ public class Bib2Lod {
             }
         }
         
-        // Process the RDF input files and receive a model for printing.
-        RDFProcessor p = new RDFProcessor();
-        Model unionModel = p.processInputs(streams);
+        // Process the RDF input files and receive a union model for printing.
+        RDFPostProcessor p = new RDFPostProcessor();
+        Model allRecords = p.processRecords(records);
         
-        // Write out the cumulative model to a file.
+        // Write out the union model to a file.
         try {
             OutputStream out = new FileOutputStream(outfile);
-            // null = RDF serialization. We may want to be able to specify this
-            // on the commandline.
-            unionModel.write(out, null);
+            // Second param = RDF serialization. We may want to be able to 
+            // specify this on the commandline. For now we use the default
+            // RDF/XML.
+            allRecords.write(out, null);
             out.close();
         } catch (IOException e) {
             // TODO Auto-generated catch block

@@ -3,8 +3,6 @@
  */
 package org.ld4l.bib2lod;
 
-import java.io.InputStream;
-
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -18,45 +16,37 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  */
 abstract class ModelPostProcessor {
     
-    protected static final String BIBFRAME_NS = "http://bibframe.org/vocab/";
-    protected static final String BFWORK_URI = BIBFRAME_NS + "Work";
-       
     // Not sure yet whether we want these to be instance variables, or pass
     // them between methods.
-    protected OntModel ontModel;
-    protected OntModel assertionsModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
-    protected OntModel retractionsModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+    protected Resource bfWork;
+    protected OntModel recordModel;
+    protected OntModel assertionsModel = 
+            ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+    protected OntModel retractionsModel = 
+            ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
     
-    protected ModelPostProcessor(InputStream in) {
-        this.ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM); 
-        // TODO Take advantage of args 2 and 3 to read(InputStream, base, lang)
-        // by allowing optional specification of base URI and serialization
-        // format as program arguments. Currently relying on defaults: 
-        // Null base means there are no relative URIs in the input. Could we 
-        // handle blank nodes if we specify a base??
-        // Default serialization = RDF/XML.
-        ontModel.read(in, null, null);
+    protected ModelPostProcessor(OntModel recordModel, Resource bfWork) {
+        this.recordModel = recordModel;
+        this.bfWork = bfWork;
     }
     
     protected OntModel getOntModel() {
-        return ontModel;
+        return recordModel;
     }
 
     /**
      * Controls overall flow common to all types of post-processors.
      */
     protected OntModel process() {
-        // Do processing for the specific type of processor
-        doProcessing(); 
+        processWork(); 
         addRdfsLabels();
         applyModelChanges();
-        return ontModel;
+        return recordModel;
     }
     
-    /**
-     * Perform processing specific to this ModelPostProcessor.
-     */
-    protected abstract void doProcessing();
+
+    // Each subclass must define its own processWork method.
+    protected abstract void processWork();
     
     /**
      * Add rdfs:label to any resources in the model that don't have one.
@@ -66,7 +56,7 @@ abstract class ModelPostProcessor {
      * 
      */
     protected void addRdfsLabels() {
-        ExtendedIterator<Individual> individuals = ontModel.listIndividuals();
+        ExtendedIterator<Individual> individuals = recordModel.listIndividuals();
         while (individuals.hasNext()) {
             Resource individual = individuals.next();
             //if (! individual.hasProperty(RDFS.LABEL) {
@@ -76,10 +66,10 @@ abstract class ModelPostProcessor {
     }
     
     /** 
-     * Apply assertions and retractions to this.ontModel.
+     * Apply assertions and retractions to this.recordModel.
      */
     protected void applyModelChanges() {
-        // Apply assertions and retractions to this.ontModel.
+        // Apply assertions and retractions to this.recordModel.
     }
 
 }
