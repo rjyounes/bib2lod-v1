@@ -49,8 +49,10 @@ public class BfPerson extends BfIndividual  {
          *    </bf:hasAuthority>
          *   
          * instead of like this: 
+         * 
          * <bf:hasAuthority 
          * rdf:resource="http://vivo.cornell.edu/individual/individual23258"/>
+         * 
          * then the getURI() method returns null, which is what we want. That is 
          * case where we'll mint a new URI ending in "foaf".
          */

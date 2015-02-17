@@ -34,7 +34,18 @@ public class Constants {
     protected static final Resource BF_WORK_CLASS = 
             ResourceFactory.createResource(BF_WORK_URI);
     
+    protected static final String BF_INSTANCE_URI = BIBFRAME_NS + "Instance";
+    protected static final Resource BF_INSTANCE_CLASS = 
+            ResourceFactory.createResource(BF_INSTANCE_URI);
 
+    protected static final String BF_TITLE_URI = BIBFRAME_NS + "Title";
+    protected static final Resource BF_TITLE_CLASS = 
+            ResourceFactory.createResource(BF_TITLE_URI);
+    
+    protected static final String BF_IDENTIFIER_URI = BIBFRAME_NS + "Identifier";
+    protected static final Resource BF_IDENTIFIER_CLASS = 
+            ResourceFactory.createResource(BF_IDENTIFIER_URI);    
+    
     protected static final String BF_PERSON_URI = BIBFRAME_NS + "Person";
     protected static final Resource BF_PERSON_CLASS = 
             ResourceFactory.createResource(BF_PERSON_URI);
@@ -54,7 +65,9 @@ public class Constants {
     protected static final Property BF_LABEL_PROPERTY = 
             ResourceFactory.createProperty(BF_LABEL_URI);
     
-    
+    protected static final String BF_TITLE_VALUE_URI = BIBFRAME_NS + "titleValue";
+    protected static final Property BF_TITLE_VALUE_PROPERTY = 
+            ResourceFactory.createProperty(BF_TITLE_VALUE_URI);    
     
     /* FOAF */
     protected static final String FOAF_NS = "http://xmlns.com/foaf/0.1/";
@@ -75,6 +88,11 @@ public class Constants {
     protected static final String MADSRDF_NS = 
             "http://www.loc.gov/mads/rdf/v1#";
     
+    /* MADSRDF classes */
+    protected static final String MADSRDFS_AUTHORITY_URI = MADSRDF_NS + "Authority";
+    protected static final Resource MADSRDFS_AUTHORITY_CLASS = 
+            ResourceFactory.createResource(MADSRDFS_AUTHORITY_URI);
+    
     /* MADSRDF object properties */
     protected static final String MADSRDF_IS_IDENTIFIED_BY_AUTHORITY_URL = 
             MADSRDF_NS + "isIdentifiedByAuthority";
@@ -86,6 +104,10 @@ public class Constants {
     protected static final Property MADSRDF_IDENTIFIES_RWO_PROPERTY = 
             ResourceFactory.createProperty(MADSRDF_IDENTIFIES_RWO_URI);
     
+    protected static final String MADSRDF_AUTHORITATIVE_LABEL_URI = 
+            MADSRDF_NS + "authoritativeLabel";
+    protected static final Property MADSRDF_AUTHORITATIVE_LABEL_PROPERTY = 
+            ResourceFactory.createProperty(MADSRDF_AUTHORITATIVE_LABEL_URI);
     
     /* RELATORS */
     protected static final String RELATORS_NS = 

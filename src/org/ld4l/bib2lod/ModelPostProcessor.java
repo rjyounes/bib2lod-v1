@@ -3,11 +3,17 @@
  */
 package org.ld4l.bib2lod;
 
+import static org.ld4l.bib2lod.Constants.*;
+
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.rdf.model.ResIterator;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
@@ -73,12 +79,61 @@ abstract class ModelPostProcessor {
      * label. CHECK THIS OUT.    
      */
     private void addRdfsLabels() {
-        ExtendedIterator<Individual> individuals = recordModel.listIndividuals();
-        while (individuals.hasNext()) {
-            Individual individual = individuals.next();
-            if (! individual.hasProperty(RDFS.label) ) {
-               BfIndividual bfIndividual = new BfIndividual(individual);
-               bfIndividual.addRdfsLabel();
+        
+        /*
+         * TODO MUST HAVE: read Bibframe (and other ontologies) into our 
+         * OntModel (recordModel). Then we can create individuals using 
+         * OntResource.listIndividuals(), and we don't have to jump through
+         * hoops to add the labels. See code below. However, listSubjects()
+         * only gives us the subjects, not any resource. We want to make sure
+         * we don't get back classes and properties, so need to check this.
+         * recordModel.listIndividuals() doesn't work because there are no ontologies in
+         * the model. See javadoc: "Answer an iterator that ranges over the individual 
+         * resources in this model, i.e. the resources with rdf:type corresponding to a 
+         * class defined in the ontology." There are no classes defined in the ontology.
+         * 
+         * Once we can work with individuals, we can add this as an instance
+         * method to BfIndividual.
+         * 
+         *       ExtendedIterator<Individual> individuals = recordModel.listIndividuals();
+         *       while (individuals.hasNext()) {
+         *           Individual individual = individuals.next();
+         *           System.out.println(individual.getPropertyValue(BF_LABEL_PROPERTY).toString());
+         *           if (! individual.hasProperty(RDFS.label) ) {
+         *              BfIndividual bfIndividual = new BfIndividual(individual);
+         *              bfIndividual.addRdfsLabel();
+         *           }
+         *       }
+         */
+
+        ResIterator subjects = recordModel.listSubjects();
+        while (subjects.hasNext()) {
+            Resource subject = subjects.next();
+            String rdfsLabel = null;
+            if (! subject.hasProperty(RDFS.label)) {
+                Statement stmt = subject.getProperty(BF_LABEL_PROPERTY);
+                if (stmt != null) {
+                    Literal bfLabel = stmt.getLiteral();
+                    rdfsLabel = bfLabel.getLexicalForm();                 
+                }
+            }
+            //if (rdfsLabel == null) {
+                
+            //} else if (subject.hasProperty(RDF.type, BF_TITLE_CLASS)) {
+                
+            //} else if (subject.hasProperty(RDF.type, BF_IDENTIFIER_CLASS)) {
+                
+            //} else if (subject.hasProperty(RDF.type, MADSRDFS_AUTHORITY_CLASS)) {
+                
+            //} else if (subject.hasProperty(RDF.type, BF_INSTANCE_CLASS)) {
+                
+            //} else if (subject.hasProperty(RDF.type, BF_WORK_CLASS)) {
+                
+            //} else {
+             //   rdfsLabel = subject.getURI();
+            //}      
+            if (rdfsLabel != null) {
+                subject.addProperty(RDFS.label, rdfsLabel);
             }
         }
     }
