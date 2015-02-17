@@ -10,21 +10,12 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
-/**
- * The BfIndividual has a pointer to a Jena Individual in order to reference
- * its functionality, while adding additional functionality of its own.
- * 
- * By using a BfIndividual, we can modify it and those statements are 
- * automatically added to the model (MAKE SURE THIS IS TRUE!!). We don't need
- * to create a new model to manually add to the assertions model.
- * 
- * Should this be an abstract class? Wait and see whether we ever need to
- * instantiate a BfIndividual that has no specific Bibframe type. Seems
- * unlikely.
- * 
+/** Decorator of class Individual to provide post-processor specific 
+ * functionality.
  * @author rjy7
  *
  */
+
 public class BfIndividual {
 
     protected Individual baseIndividual;
@@ -82,15 +73,21 @@ public class BfIndividual {
     
     private String computeBaseUri(String localNamespace) {
         String baseIndividualUri = this.baseIndividual.getURI();
-        // Jena strips off initial digits of the local name, so we can't use
-        // Jena this.baseIndividual.getLocalName(). Need to parse the URI to
-        // get the full local name.
-        // Another option: add an initial non-numeric character to the baseUri
-        // passed to the Bibframe converter. E.g., 
-        // http://localhost:8080/ld4l-vitro/individual/_
-        // Then we can't call it localNamespace, but rather baseUri.
-        // For now, the two processes aren't linked, so use the current
-        // approach.
+        /*
+        * Jena strips off initial digits of the local name, so we can't use
+        * Jena this.baseIndividual.getLocalName(). Need to parse the URI to
+        * get the full local name.
+        * Another way to do the same thing: use the bfWork URI as the base
+        * URI for any entity created while processing that work. Not sure if
+        * that's as reliable, so using the following.
+        * Another option: add an initial non-numeric character to the baseUri
+        * passed to the Bibframe converter. E.g., 
+        * http://localhost:8080/ld4l-vitro/individual/_
+        * Then we shouldn't call it localNamespace, but rather baseUri.
+        * For now, the BF conversion isn't linked to the post-processor, so 
+        * use the current approach. If/when we link them together into a
+        * single process, that would make more sense.
+        * */
         String localName = 
                 StringUtils.substringAfterLast(baseIndividualUri, "/");
         return localNamespace + localName;
@@ -101,8 +98,8 @@ public class BfIndividual {
         if (baseIndividual.hasProperty(BF_HAS_AUTHORITY_PROPERTY)) {
             Resource authorityResource = 
                     baseIndividual.getPropertyResourceValue(BF_HAS_AUTHORITY_PROPERTY);
-            // TODO Do we need to ascertain that this is an external URI, or
-            // doesn't it matter?
+            // TODO Should this be limited to external URIs, or should we 
+            // include internal ones as well? Seems like the latter.
             authorityResourceUri = authorityResource.getURI();
         }
         return authorityResourceUri;

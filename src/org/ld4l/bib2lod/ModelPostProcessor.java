@@ -30,9 +30,11 @@ abstract class ModelPostProcessor {
         this.bfWork = bfWork;
         this.localNamespace = localNamespace;
         
-        // Are we going to need this? All statements may be added through individuals.
+        // Are we going to need this? Perhaps all statements are added via
+        // the Individual.
         this.assertionsModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         // Are we going to need this? There may not be any statements to retract.
+        // If there are, they may all be retracted via the Individual.
         this.retractionsModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
     }
     

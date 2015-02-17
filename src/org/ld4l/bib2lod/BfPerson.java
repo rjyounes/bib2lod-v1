@@ -8,6 +8,13 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
+/**
+ * Subclasses BfIndividual, a Decorator class on Jena Individual, to provide
+ * functionality specific to dealing with bf:Person individuals.
+ * @author rjy7
+ *
+ */
+
 public class BfPerson extends BfIndividual  {
     
     protected Resource bfType = BF_PERSON_CLASS;    
@@ -27,25 +34,26 @@ public class BfPerson extends BfIndividual  {
     protected Individual createFoafPerson() {
 
         OntModel ontModel = baseIndividual.getOntModel();
-        
-        // *** Doesn't work because local name loses the digits at the front.
-        // need to add them back to the front of the new local name.
-        // What's going on with this??
-        
-        // If the baseIndividual hasAuthority to an external URI, use
-        // that instead of minting a URI.
+
         /* 
-         * TODO Make sure that if the authority is:
-        
-        <bf:hasAuthority>
-        <madsrdf:Authority>
-           <madsrdf:authoritativeLabel>Royer, Caisa Elizabeth.</madsrdf:authoritativeLabel>
-        </madsrdf:Authority>
-     </bf:hasAuthority>
-        instead of like this: 
-        <bf:hasAuthority rdf:resource="http://vivo.cornell.edu/individual/individual23258"/>
-        then the getURI() method returns null.
-        */
+         * If the baseIndividual hasAuthority to an external URI, use that
+         * instead of minting a URI.
+         * If the authority is structured as follows:
+         *
+         *   <bf:hasAuthority>
+         *       <madsrdf:Authority>
+         *          <madsrdf:authoritativeLabel>
+         *              Royer, Caisa Elizabeth.
+         *          </madsrdf:authoritativeLabel>
+         *       </madsrdf:Authority>
+         *    </bf:hasAuthority>
+         *   
+         * instead of like this: 
+         * <bf:hasAuthority 
+         * rdf:resource="http://vivo.cornell.edu/individual/individual23258"/>
+         * then the getURI() method returns null, which is what we want. That is 
+         * case where we'll mint a new URI ending in "foaf".
+         */
         String foafPersonUri = getAuthorityResourceUri();
         if (foafPersonUri == null) {
             foafPersonUri = baseUri + "foaf";
