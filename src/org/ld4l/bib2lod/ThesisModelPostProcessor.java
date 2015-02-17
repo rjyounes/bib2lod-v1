@@ -20,11 +20,20 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
     }    
       
     protected void processRecord() {
+        assignThesisType();
         createFoafPersonCreator();
         createFoafPersonAdvisor();
     }   
+    
+    private void assignThesisType() {
+        // Apparently no difference between these two, other than addOntClass() 
+        // is a method on Individual while addRDFType() is a method on 
+        // OntResource.
+        // bfWork.addRDFType(LD4L_THESIS_CLASS);
+        bfWork.addOntClass(LD4L_THESIS_CLASS);
+    }
 
-    protected Individual createFoafPersonCreator() {
+    private Individual createFoafPersonCreator() {
  
         // Get the bfPerson creator of this.bfWork.
         BfPerson bfPerson = 
@@ -35,7 +44,7 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
         
     }
     
-    protected Individual createFoafPersonAdvisor() {
+    private Individual createFoafPersonAdvisor() {
         
         // Get the bfPerson advisor of this.bfWork.
         BfPerson bfPerson = 

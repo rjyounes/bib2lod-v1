@@ -18,7 +18,10 @@ public class Constants {
     /* LD4L */
     protected static final String LD4L_CORE_NS = "http://ld4l.org/ontology/core#";
     
-
+    protected static final String LD4L_THESIS_URI = LD4L_CORE_NS + "Thesis";
+    protected static final Resource LD4L_THESIS_CLASS = 
+            ResourceFactory.createResource(LD4L_THESIS_URI);
+    
     /* BIBFRAME */  
     protected static final String BIBFRAME_NS = "http://bibframe.org/vocab/";
     
