@@ -7,7 +7,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -31,9 +37,12 @@ public class Bib2Lod {
         
         // Read in program arguments
         // TODO Use options parser instead of ordered arguments
-        String readdir = args[0]; 
-        String outfile = args[1];
-        String baseUri = args[2];
+        // The directory to read RDF files from.
+        String readdir = args[0];   
+        // The file to write output to.
+        String outdir = args[1];           
+        // Namespace for minting URIs for new individuals.
+        String localNamespace = args[2];
          
         // Convert the directory of RDF files into a list of input streams
         // for processing.
@@ -55,10 +64,11 @@ public class Bib2Lod {
         
         // Process the RDF input files and receive a union model for printing.
         RDFPostProcessor p = new RDFPostProcessor();
-        Model allRecords = p.processRecords(records, baseUri);
+        Model allRecords = p.processRecords(records, localNamespace);
         
         // Write out the union model to a file.
         try {
+            String outfile = getOutputFilename(outdir);
             OutputStream out = new FileOutputStream(outfile);
             // Second param = RDF serialization. We may want to be able to 
             // specify this on the commandline. For now we use the default
@@ -72,6 +82,20 @@ public class Bib2Lod {
         
        System.out.println("Done!");
 
-    }        
+    }    
+    
+    private static String getOutputFilename(String outdir) {
+        
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss");
+        Date date = new Date();
+        String now = dateFormat.format(date);
+        // Currently allowing only RDF/XML output. Later may offer 
+        // serialization as a program argument. This will affect extension
+        // as well as second parameter to allRecords.write(out, null) above.
+        String ext = "rdf";
+        String filename = "out." + now.toString() + "." + ext;
+        Path path = Paths.get(outdir, filename);   
+        return path.toString();
+    }
         
 }

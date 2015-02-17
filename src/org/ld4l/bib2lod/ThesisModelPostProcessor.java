@@ -7,7 +7,6 @@ import static org.ld4l.bib2lod.Constants.BF_CREATOR_PROPERTY;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
  * @author rjy7
@@ -21,24 +20,19 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
     }    
       
     protected void processRecord() {
-
-        assertionsModel.add(createFoafPersonCreator());
-
+        //createFoafPersonCreator();
     }
     
 
-    protected OntModel createFoafPersonCreator() {
-
-        // Find the bf:Person creator of the bf:Work.
-        Resource bfCreator = 
-                bfWork.getPropertyResourceValue(BF_CREATOR_PROPERTY);
-        
-        // Get the bf:Person individual from the model.
-        Individual bfPerson = 
-                recordModel.getIndividual(bfCreator.getURI());
+    protected Individual createFoafPersonCreator() {
+ 
+        // Get the bfPerson creator of this.bfWork.
+        BfPerson bfPerson = 
+                new BfPerson(bfWork, BF_CREATOR_PROPERTY, localNamespace);
         
         // Create a corresponding foaf:Person.
-        return createFoafPerson(bfPerson);
+        return bfPerson.createFoafPerson();
+        
     }
 
 }

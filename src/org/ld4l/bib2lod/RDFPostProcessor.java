@@ -10,13 +10,13 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 class RDFPostProcessor {
     
-    protected OntModel processRecords(List<InputStream> records, String baseUri) {
+    protected OntModel processRecords(List<InputStream> records, String localNamespace) {
         
         OntModel allRecords = 
                 ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM); 
         
         for (InputStream record : records) {
-            OntModel processedRecordModel = processRecord(record, baseUri);
+            OntModel processedRecordModel = processRecord(record, localNamespace);
             // OK to call add if processedRecordModel is null, or test for
             // non-null value first?
             allRecords.add(processedRecordModel);
