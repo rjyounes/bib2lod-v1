@@ -23,6 +23,10 @@ public class Constants {
     protected static final String BIBFRAME_NS = "http://bibframe.org/vocab/";
     
     /* BIBFRAME classes */    
+    protected static final String BF_RESOURCE_URI = BIBFRAME_NS + "Resource";
+    protected static final Resource BF_RESOURCE_CLASS = 
+            ResourceFactory.createResource(BF_RESOURCE_URI);
+    
     protected static final String BF_WORK_URI = BIBFRAME_NS + "Work";
     protected static final Resource BF_WORK_CLASS = 
             ResourceFactory.createResource(BF_WORK_URI);
@@ -78,5 +82,16 @@ public class Constants {
             MADSRDF_NS + "identifiesRWO";
     protected static final Property MADSRDF_IDENTIFIES_RWO_PROPERTY = 
             ResourceFactory.createProperty(MADSRDF_IDENTIFIES_RWO_URI);
+    
+    
+    /* RELATORS */
+    protected static final String RELATORS_NS = 
+            "http://id.loc.gov/vocabulary/relators/";
+    
+    /* Relators object properties */
+    protected static final String RELATORS_THS_URI =
+            "http://id.loc.gov/vocabulary/relators/ths";
+    protected static final Property RELATORS_THS_PROPERTY = 
+            ResourceFactory.createProperty(RELATORS_THS_URI);
     
 }

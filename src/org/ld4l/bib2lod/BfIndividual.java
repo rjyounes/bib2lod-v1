@@ -1,6 +1,6 @@
 package org.ld4l.bib2lod;
 
-import static org.ld4l.bib2lod.Constants.BF_HAS_AUTHORITY_PROPERTY;
+import static org.ld4l.bib2lod.Constants.*;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -8,6 +8,7 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
  * The BfIndividual has a pointer to a Jena Individual in order to reference
@@ -27,12 +28,13 @@ import com.hp.hpl.jena.rdf.model.Resource;
 public class BfIndividual {
 
     protected Individual baseIndividual;
-    protected Resource bfType;
-    protected String baseUri;
+    protected Resource bfType = BF_RESOURCE_CLASS;
+    protected String baseUri = null;
       
-    // NOTE: By using a BfPerson individual, we can add statements to it which
-    // will automatically be added to the model. (MAKE SURE THIS IS TRUE.)
-    // We don't need to create a model from it.
+    protected BfIndividual(Individual baseIndividual) {
+        this.baseIndividual = baseIndividual;
+    }
+    
     protected BfIndividual(
             Individual relatedIndividual, Property property, String localNamespace) {
          
@@ -48,15 +50,37 @@ public class BfIndividual {
                 ontModel.getIndividual(resourceUri);
         
         // The baseUri to be used for minting URIs for new Individuals.
-        this.baseUri = getBaseUri(localNamespace);
+        this.baseUri = computeBaseUri(localNamespace);
 
+    }
+    
+    protected void addRdfsLabel() {
+        Individual baseIndividual = this.baseIndividual;
+        
+        String rdfsLabel = null;
+        
+        String bfLabel = 
+                baseIndividual.getPropertyValue(BF_LABEL_PROPERTY).asLiteral().getLexicalForm();
+        
+        if (bfLabel != null) {
+            rdfsLabel = bfLabel;
+        } else {
+            // TODO Fill in
+        }
+        
+        if (rdfsLabel == null) {
+            rdfsLabel = baseIndividual.getURI();
+        }
+        
+        baseIndividual.addProperty(RDFS.label, rdfsLabel);
+        
     }
     
     protected Individual getBaseIndividual() {
         return this.baseIndividual;
     }
     
-    private String getBaseUri(String localNamespace) {
+    private String computeBaseUri(String localNamespace) {
         String baseIndividualUri = this.baseIndividual.getURI();
         // Jena strips off initial digits of the local name, so we can't use
         // Jena this.baseIndividual.getLocalName(). Need to parse the URI to

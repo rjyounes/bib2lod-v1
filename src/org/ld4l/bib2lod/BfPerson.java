@@ -1,31 +1,27 @@
 package org.ld4l.bib2lod;
 
-import static org.ld4l.bib2lod.Constants.BF_LABEL_PROPERTY;
-import static org.ld4l.bib2lod.Constants.BF_PERSON_CLASS;
-import static org.ld4l.bib2lod.Constants.FOAF_NAME_PROPERTY;
-import static org.ld4l.bib2lod.Constants.FOAF_PERSON_CLASS;
-import static org.ld4l.bib2lod.Constants.MADSRDF_IS_IDENTIFIED_BY_AUTHORITY_PROPERTY;
+import static org.ld4l.bib2lod.Constants.*;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class BfPerson extends BfIndividual  {
     
-    protected final Resource bfType = BF_PERSON_CLASS;    
+    protected Resource bfType = BF_PERSON_CLASS;    
 
     protected BfPerson(
             Individual relatedIndividual, Property property, String baseUri) {
         super(relatedIndividual, property, baseUri);
     }
     
-    protected Literal cleanLabel(Literal bfPersonLabel) {
+    protected String cleanLabel(String bfPersonLabel) {
+        // TODO Add transformations
         // Remove dates from label
         // E.g., <bf:label>Prokofiev, Sergey, 1891-1953.</bf:label>
-        return bfPersonLabel;
+        return bfPersonLabel; // TEMPORARY
     }    
     
     protected Individual createFoafPerson() {
@@ -58,19 +54,24 @@ public class BfPerson extends BfIndividual  {
         Individual foafPerson = 
                 ontModel.createIndividual(foafPersonUri, FOAF_PERSON_CLASS);
         
-        Literal bfCreatorLabel = 
-                (Literal) baseIndividual.getPropertyValue(BF_LABEL_PROPERTY);
+        String bfCreatorLabel = 
+                //((Literal) baseIndividual.getPropertyValue(BF_LABEL_PROPERTY)).getLexicalForm();
+                baseIndividual.getPropertyValue(BF_LABEL_PROPERTY).asLiteral().getLexicalForm();
         
         // TODO Remove dates from label
-        Literal foafPersonName = cleanLabel(bfCreatorLabel);
+        String foafPersonName = cleanLabel(bfCreatorLabel);
 
-        foafPerson.addLiteral(FOAF_NAME_PROPERTY, foafPersonName);
-        foafPerson.addLiteral(RDFS.label, foafPersonName);
+        foafPerson.addProperty(FOAF_NAME_PROPERTY, foafPersonName);
+        foafPerson.addProperty(RDFS.label, foafPersonName);
         
-        // Add relation to bf and foaf persons: madsrdf:identifiesRWO.
-        // TODO Check that the inverse is also put into Vitro.
         foafPerson.addProperty(
                 MADSRDF_IS_IDENTIFIED_BY_AUTHORITY_PROPERTY, baseIndividual);
+        
+        // TODO Decide on whether to make the inverse assertion or not.
+        // We shouldn't need this because it would come from inferencing. But 
+        // we can add it explicitly anyway. What are the pros/cons? 
+        // If we don't assert it, check that Vitro makes the inference.
+        baseIndividual.addProperty(MADSRDF_IDENTIFIES_RWO_PROPERTY, foafPerson);
         
         return foafPerson;
     }

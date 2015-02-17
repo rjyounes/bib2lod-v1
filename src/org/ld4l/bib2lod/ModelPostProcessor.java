@@ -8,6 +8,7 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
  * @author rjy7
@@ -29,6 +30,7 @@ abstract class ModelPostProcessor {
         this.bfWork = bfWork;
         this.localNamespace = localNamespace;
         
+        // Are we going to need this? All statements may be added through individuals.
         this.assertionsModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         // Are we going to need this? There may not be any statements to retract.
         this.retractionsModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
@@ -68,15 +70,17 @@ abstract class ModelPostProcessor {
      * assigned a bf:label? So then only the primary work could be missing a 
      * label. CHECK THIS OUT.    
      */
-    protected void addRdfsLabels() {
+    private void addRdfsLabels() {
         ExtendedIterator<Individual> individuals = recordModel.listIndividuals();
         while (individuals.hasNext()) {
             Individual individual = individuals.next();
-            //if (! individual.hasProperty(RDFS.LABEL) {
-
-            //}
+            if (! individual.hasProperty(RDFS.label) ) {
+               BfIndividual bfIndividual = new BfIndividual(individual);
+               bfIndividual.addRdfsLabel();
+            }
         }
     }
+
     
     /** 
      * Apply assertions and retractions to this.recordModel.

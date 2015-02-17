@@ -3,7 +3,7 @@
  */
 package org.ld4l.bib2lod;
 
-import static org.ld4l.bib2lod.Constants.BF_CREATOR_PROPERTY;
+import static org.ld4l.bib2lod.Constants.*;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
@@ -20,9 +20,9 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
     }    
       
     protected void processRecord() {
-        //createFoafPersonCreator();
-    }
-    
+        createFoafPersonCreator();
+        createFoafPersonAdvisor();
+    }   
 
     protected Individual createFoafPersonCreator() {
  
@@ -33,6 +33,25 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
         // Create a corresponding foaf:Person.
         return bfPerson.createFoafPerson();
         
+    }
+    
+    protected Individual createFoafPersonAdvisor() {
+        
+        // Get the bfPerson advisor of this.bfWork.
+        BfPerson bfPerson = 
+                new BfPerson(bfWork, RELATORS_THS_PROPERTY, localNamespace); 
+
+        Individual foafPerson = bfPerson.createFoafPerson();
+
+        // TODO Check that this retraction works.
+        // <bf:hasAuthority rdf:resource="http://vivo.cornell.edu/individual/individual23258"/>
+        // The vivo individual is NOT an authority       
+        // CAUTION: SIDE EFFECT
+        bfPerson.getBaseIndividual().removeProperty(BF_HAS_AUTHORITY_PROPERTY, foafPerson);
+        
+        // TODO Do we need anything else here?
+        
+        return foafPerson;
     }
 
 }
