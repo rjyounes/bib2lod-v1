@@ -1,5 +1,6 @@
 package org.ld4l.bib2lod;
 
+import static org.ld4l.bib2lod.Constants.BF_HAS_AUTHORITY_PROPERTY;
 import static org.ld4l.bib2lod.Constants.BF_LABEL_PROPERTY;
 import static org.ld4l.bib2lod.Constants.BF_PERSON_CLASS;
 import static org.ld4l.bib2lod.Constants.FOAF_NAME_PROPERTY;
@@ -82,11 +83,19 @@ public class BfPerson extends BfIndividual  {
         foafPerson.addProperty(
                 MADSRDF_IS_IDENTIFIED_BY_AUTHORITY_PROPERTY, baseIndividual);
         
-        // TODO Decide on whether to make the inverse assertion or not.
-        // We shouldn't need this because it would come from inferencing. But 
-        // we can add it explicitly anyway. What are the pros/cons? 
-        // If we don't assert it, check that Vitro makes the inference.
+        // Make the inverse assertion for ingest into systems that don't do
+        // inverse inferencing.
         baseIndividual.addProperty(MADSRDF_IDENTIFIES_RWO_PROPERTY, foafPerson);
+        
+        // Remove the bf:hasAuthority relationship to the foaf:Person, because
+        // a foaf:Person is not an Authority.  We've just added the appropriate
+        // relationship MADSRDF_IDENTIFIES_RWO_PROPERTY.
+        Resource authority = baseIndividual.getPropertyResourceValue(
+                BF_HAS_AUTHORITY_PROPERTY);
+        if (authority != null && authority.getURI() == foafPerson.getURI()) {
+            baseIndividual.removeProperty(BF_HAS_AUTHORITY_PROPERTY, authority);
+        }
+        
         
         return foafPerson;
     }

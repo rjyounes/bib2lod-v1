@@ -3,10 +3,14 @@
  */
 package org.ld4l.bib2lod;
 
-import static org.ld4l.bib2lod.Constants.*;
+import static org.ld4l.bib2lod.Constants.BF_CREATOR_PROPERTY;
+import static org.ld4l.bib2lod.Constants.BF_HAS_AUTHORITY_PROPERTY;
+import static org.ld4l.bib2lod.Constants.LD4L_THESIS_CLASS;
+import static org.ld4l.bib2lod.Constants.RELATORS_THS_PROPERTY;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
  * @author rjy7
@@ -52,14 +56,6 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
 
         Individual foafPerson = bfPerson.createFoafPerson();
 
-        // TODO Check that this retraction works.
-        // <bf:hasAuthority rdf:resource="http://vivo.cornell.edu/individual/individual23258"/>
-        // The vivo individual is NOT an authority       
-        // CAUTION: SIDE EFFECT
-        bfPerson.getBaseIndividual().removeProperty(BF_HAS_AUTHORITY_PROPERTY, foafPerson);
-        
-        // TODO Do we need anything else here?
-        
         return foafPerson;
     }
 
