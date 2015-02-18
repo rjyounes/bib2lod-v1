@@ -19,6 +19,7 @@ import java.util.List;
 import com.hp.hpl.jena.rdf.model.Model;
 
 public class Bib2Lod {
+    
 
     /**
      * Read in program arguments, pass off for processing, and write out
@@ -51,8 +52,8 @@ public class Bib2Lod {
         List<InputStream> ontologies = readFiles(ontologyDir.getCanonicalPath());
         
         // Process the RDF input files and receive a union model for printing.
-        RDFPostProcessor p = new RDFPostProcessor();
-        Model allRecords = p.processRecords(records, ontologies, localNamespace);
+        RDFPostProcessor p = new RDFPostProcessor(localNamespace);
+        Model allRecords = p.processRecords(records, ontologies);
         
         // Write out the union model to a file.
         try {

@@ -22,8 +22,8 @@ public class BfPerson extends BfIndividual  {
     protected String bfTypeUri = BF_PERSON_URI;    
 
     protected BfPerson(
-            Individual relatedIndividual, Property property, String baseUri) {
-        super(relatedIndividual, property, baseUri);
+            Individual relatedIndividual, Property property) {
+        super(relatedIndividual, property);
     }
     
     protected Literal cleanLabel(Literal bfPersonLabel) {

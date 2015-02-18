@@ -21,7 +21,6 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  */
 abstract class ModelPostProcessor {
     
-    protected String localNamespace;
     protected Individual bfWork;
     protected OntModel recordModel;
     
@@ -30,10 +29,10 @@ abstract class ModelPostProcessor {
     protected OntModel retractionsModel;
     
     protected ModelPostProcessor(
-            OntModel recordModel, Individual bfWork, String localNamespace) {
+            OntModel recordModel, Individual bfWork) {
+        
         this.recordModel = recordModel;
         this.bfWork = bfWork;
-        this.localNamespace = localNamespace;
         
         // Are we going to need this? Perhaps all statements are added via
         // the Individual.
@@ -79,22 +78,8 @@ abstract class ModelPostProcessor {
      */
     private void addRdfsLabels() {
         
-        /*
-         * TODO MUST HAVE: read Bibframe (and other ontologies) into our 
-         * OntModel (recordModel). Then we can create individuals using 
-         * OntResource.listIndividuals(), and we don't have to jump through
-         * hoops to add the labels. See code below. However, listSubjects()
-         * only gives us the subjects, not any resource. We want to make sure
-         * we don't get back classes and properties, so need to check this.
-         * recordModel.listIndividuals() doesn't work because there are no ontologies in
-         * the model. See javadoc: "Answer an iterator that ranges over the individual 
-         * resources in this model, i.e. the resources with rdf:type corresponding to a 
-         * class defined in the ontology." There are no classes defined in the ontology.
-         * 
-         * Once we can work with individuals, we can add this as an instance
-         * method to BfIndividual. Better yet, we can define new subclasses, 
-         * with each class handling its own label.
-         * 
+
+         /* 
          *       ExtendedIterator<Individual> individuals = recordModel.listIndividuals();
          *       while (individuals.hasNext()) {
          *           Individual individual = individuals.next();

@@ -10,9 +10,15 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 class RDFPostProcessor {
     
+    protected static String LOCAL_NAMESPACE;
+    
+    protected RDFPostProcessor(String localNamespace) {
+        LOCAL_NAMESPACE = localNamespace;
+    }
+    
     protected OntModel processRecords(List<InputStream> records, 
-            List<InputStream> ontologies, String localNamespace) {
-        
+            List<InputStream> ontologies) {
+               
         OntModel ontologyModel = 
                 ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM); 
         
@@ -30,7 +36,7 @@ class RDFPostProcessor {
                 ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM); 
         
         for (InputStream record : records) {
-            OntModel processedRecordModel = processRecord(record, ontologyModel, localNamespace);
+            OntModel processedRecordModel = processRecord(record, ontologyModel);
             // OK to call add if processedRecordModel is null, or test for
             // non-null value first?
             allRecords.add(processedRecordModel);
@@ -39,7 +45,7 @@ class RDFPostProcessor {
         return allRecords;
     }
     
-    protected OntModel processRecord(InputStream record, OntModel ontologyModel, String baseUri)  {
+    protected OntModel processRecord(InputStream record, OntModel ontologyModel)  {
 
         /* 
          * Consider making this or allRecords an inferencing model, so we don't, 
@@ -54,19 +60,19 @@ class RDFPostProcessor {
         OntModel recordModel = 
                 ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
 
+        // Third parameter = serialization. Currently using default RDF/XML.
+        // In future may want to specify as commandline option.
+        // Default serialization = RDF/XML.
+        recordModel.read(record, LOCAL_NAMESPACE, null);
+        
         // TODO Remove the parts of the ontologies (except Bibframe and LD4L)
         // that we're not using, so there are fewer statements to add to and 
         // remove from recordModel.
         recordModel.addSubModel(ontologyModel);
         
-        // Third parameter = serialization. Currently using default RDF/XML.
-        // In future may want to specify as commandline option.
-        // Default serialization = RDF/XML.
-        recordModel.read(record, baseUri, null);
-        
         ModelPostProcessor p = 
-                ModelPostProcessorFactory.createModelPostProcessor(
-                        recordModel, baseUri); 
+                ModelPostProcessorFactory.createModelPostProcessor(recordModel);
+                         
 
         if (p == null) {
             return null;

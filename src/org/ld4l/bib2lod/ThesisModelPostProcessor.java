@@ -15,8 +15,8 @@ import com.hp.hpl.jena.ontology.OntModel;
 class ThesisModelPostProcessor extends ModelPostProcessor {
 
     protected ThesisModelPostProcessor(
-            OntModel recordModel, Individual bfWork, String baseUri) {
-        super(recordModel, bfWork, baseUri);
+            OntModel recordModel, Individual bfWork) {
+        super(recordModel, bfWork);
     }    
       
     protected void processRecord() {
@@ -37,7 +37,7 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
  
         // Get the bfPerson creator of this.bfWork.
         BfPerson bfPerson = new BfPerson(bfWork, recordModel.getProperty(
-                BF_CREATOR_URI), localNamespace);
+                BF_CREATOR_URI));
         
         // Create a corresponding foaf:Person.
         return bfPerson.createFoafPerson();
@@ -48,7 +48,7 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
         
         // Get the bfPerson advisor of this.bfWork.
         BfPerson bfPerson = new BfPerson(bfWork, recordModel.getProperty(
-                RELATORS_THS_URI), localNamespace); 
+                RELATORS_THS_URI)); 
 
         Individual foafPerson = bfPerson.createFoafPerson();
 

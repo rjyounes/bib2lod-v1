@@ -1,6 +1,7 @@
 package org.ld4l.bib2lod;
 
 import static org.ld4l.bib2lod.Constants.*;
+import static org.ld4l.bib2lod.RDFPostProcessor.LOCAL_NAMESPACE;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,7 +18,6 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * @author rjy7
  *
  */
-
 public class BfIndividual {
 
     protected Individual baseIndividual;
@@ -32,7 +32,7 @@ public class BfIndividual {
     }
     
     protected BfIndividual(
-            Individual relatedIndividual, Property property, String localNamespace) {
+            Individual relatedIndividual, Property property) {
          
         setOntModelAndType(relatedIndividual);
         
@@ -45,7 +45,7 @@ public class BfIndividual {
         baseIndividual = ontModel.getIndividual(resourceUri);
  
         // The baseUri to be used for minting URIs for new Individuals.
-        baseUri = computeBaseUri(localNamespace);
+        baseUri = computeBaseUri();
     }
     
     private void setOntModelAndType(Individual individual) {
@@ -89,7 +89,7 @@ public class BfIndividual {
         return baseIndividual;
     }
     
-    private String computeBaseUri(String localNamespace) {
+    private String computeBaseUri() {
         String baseIndividualUri = baseIndividual.getURI();
         /*
         * Jena strips off initial digits of the local name, so we can't use
@@ -108,7 +108,7 @@ public class BfIndividual {
         * */
         String localName = 
                 StringUtils.substringAfterLast(baseIndividualUri, "/");
-        return localNamespace + localName;
+        return LOCAL_NAMESPACE + localName;
     }
     
     protected String getAuthorityResourceUri() {
