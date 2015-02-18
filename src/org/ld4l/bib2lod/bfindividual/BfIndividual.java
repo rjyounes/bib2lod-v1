@@ -13,8 +13,10 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
-/** Decorator of class Individual to provide post-processor specific 
- * functionality.
+/** Decorator of class Individual The BfIndividual wraps the Jena Individual to 
+ * provide functionality specific to the post-processor and the type of the
+ * Individual. The Decorator pattern is used because neither extending 
+ * IndividualImpl or implementing Individual is easy.
  * @author rjy7
  *
  */
@@ -26,6 +28,7 @@ public class BfIndividual {
       
     protected BfIndividual(Individual baseIndividual) {
         this.baseIndividual = baseIndividual; 
+        // Store OntModel for convenience.
         ontModel = baseIndividual.getOntModel();
         // setOntModelAndType(baseIndividual);
         // The baseUri to be used for minting URIs for new Individuals.
