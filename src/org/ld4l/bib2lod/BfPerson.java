@@ -92,6 +92,22 @@ public class BfPerson extends BfIndividual  {
         // relationship MADSRDF_IDENTIFIES_RWO_PROPERTY.
         Resource authority = baseIndividual.getPropertyResourceValue(
                 BF_HAS_AUTHORITY_PROPERTY);
+        /* Do we also want to delete the bf:hasAuthority relation to a blank
+         * node, and the blank node, since we now have a relation to a RWO? For 
+         * example:
+         *    <rdf:Description rdf:about="http://localhost:8080/vitro/individual/8793268person8">
+         *        <rdf:type rdf:resource="http://bibframe.org/vocab/Person"/>
+         *        <bf:label>Royer, Caisa Elizabeth.</bf:label>
+         *        <bf:authorizedAccessPoint>Royer, Caisa Elizabeth.</bf:authorizedAccessPoint>
+         *        <bf:hasAuthority rdf:nodeID="A0"/>
+         *        <madsrdf:identifiesRWO rdf:resource="http://localhost:8080/vitro/individual/8793268person8foaf"/>
+         *        <rdfs:label>Royer, Caisa Elizabeth.</rdfs:label>
+         *    </rdf:Description>
+         *    <rdf:Description rdf:nodeID="A0">
+         *        <rdf:type rdf:resource="http://www.loc.gov/mads/rdf/v1#Authority"/>
+         *        <madsrdf:authoritativeLabel>Royer, Caisa Elizabeth.</madsrdf:authoritativeLabel>
+         *    </rdf:Description>
+         */
         if (authority != null && authority.getURI() == foafPerson.getURI()) {
             baseIndividual.removeProperty(BF_HAS_AUTHORITY_PROPERTY, authority);
         }
