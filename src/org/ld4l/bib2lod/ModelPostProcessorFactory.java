@@ -1,6 +1,6 @@
 package org.ld4l.bib2lod;
 
-import static org.ld4l.bib2lod.Constants.BF_WORK_CLASS;
+import static org.ld4l.bib2lod.Constants.*;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
@@ -18,8 +18,8 @@ class ModelPostProcessorFactory  {
         
         // A single record may include multiple bf:Works: the primary Work may
         // be related to other Works.  
-        ExtendedIterator<Individual> bfWorks = 
-                recordModel.listIndividuals(BF_WORK_CLASS);         
+        ExtendedIterator<Individual> bfWorks = recordModel.listIndividuals(
+                recordModel.getProperty(BF_WORK_URI));         
         
         while (bfWorks.hasNext()) {
             // We're relying on the converter always putting the primary Work

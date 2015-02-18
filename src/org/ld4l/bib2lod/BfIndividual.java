@@ -1,8 +1,6 @@
 package org.ld4l.bib2lod;
 
-import static org.ld4l.bib2lod.Constants.BF_HAS_AUTHORITY_PROPERTY;
-import static org.ld4l.bib2lod.Constants.BF_LABEL_PROPERTY;
-import static org.ld4l.bib2lod.Constants.BF_RESOURCE_CLASS;
+import static org.ld4l.bib2lod.Constants.*;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,17 +21,20 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 public class BfIndividual {
 
     protected Individual baseIndividual;
-    protected Resource bfType = BF_RESOURCE_CLASS;
-    protected String baseUri = null;
+    protected OntModel ontModel;
+    protected String bfTypeUri = BF_RESOURCE_URI;
+    protected Resource bfType; // = BF_RESOURCE_CLASS;
+    protected String baseUri;
       
     protected BfIndividual(Individual baseIndividual) {
-        this.baseIndividual = baseIndividual;
+        this.baseIndividual = baseIndividual; 
+        setOntModelAndType(baseIndividual);              
     }
     
     protected BfIndividual(
             Individual relatedIndividual, Property property, String localNamespace) {
          
-        OntModel ontModel = relatedIndividual.getOntModel(); 
+        setOntModelAndType(relatedIndividual);
         
         Resource bfResource = 
                 relatedIndividual.getPropertyResourceValue(property);  
@@ -41,24 +42,27 @@ public class BfIndividual {
         String resourceUri = bfResource.getURI();
 
         // Get the base Individual from the model.
-        this.baseIndividual = 
-                ontModel.getIndividual(resourceUri);
-        
+        baseIndividual = ontModel.getIndividual(resourceUri);
+ 
         // The baseUri to be used for minting URIs for new Individuals.
-        this.baseUri = computeBaseUri(localNamespace);
-
+        baseUri = computeBaseUri(localNamespace);
+    }
+    
+    private void setOntModelAndType(Individual individual) {
+        ontModel = individual.getOntModel();
+        bfType = ontModel.getOntProperty(bfTypeUri);
     }
     
     // TODO  Duplicates code in ModelPostProcessor.addRdfsLabels(). Need to 
     // combine.
     protected void addRdfsLabel() {
-        Individual baseIndividual = this.baseIndividual;
         
         Literal rdfsLabel = null;
         Literal bfLabel = null;
         
+        Property bfLabelProperty = ontModel.getOntProperty(BF_LABEL_URI);
         RDFNode bfLabelNode = 
-                baseIndividual.getPropertyValue(BF_LABEL_PROPERTY);
+                baseIndividual.getPropertyValue(bfLabelProperty);
         if (bfLabelNode != null) {
             bfLabel = bfLabelNode.asLiteral();
             rdfsLabel = bfLabel;
@@ -82,14 +86,14 @@ public class BfIndividual {
     }
     
     protected Individual getBaseIndividual() {
-        return this.baseIndividual;
+        return baseIndividual;
     }
     
     private String computeBaseUri(String localNamespace) {
-        String baseIndividualUri = this.baseIndividual.getURI();
+        String baseIndividualUri = baseIndividual.getURI();
         /*
         * Jena strips off initial digits of the local name, so we can't use
-        * Jena this.baseIndividual.getLocalName(). Need to parse the URI to
+        * Jena baseIndividual.getLocalName(). Need to parse the URI to
         * get the full local name.
         * Another way to do the same thing: use the bfWork URI as the base
         * URI for any entity created while processing that work. Not sure if
@@ -109,9 +113,11 @@ public class BfIndividual {
     
     protected String getAuthorityResourceUri() {
         String authorityResourceUri = null;
-        if (baseIndividual.hasProperty(BF_HAS_AUTHORITY_PROPERTY)) {
+        Property bfHasAuthorityProperty = 
+                ontModel.getOntProperty(BF_HAS_AUTHORITY_URI);
+        if (baseIndividual.hasProperty(bfHasAuthorityProperty)) {
             Resource authorityResource = 
-                    baseIndividual.getPropertyResourceValue(BF_HAS_AUTHORITY_PROPERTY);
+                    baseIndividual.getPropertyResourceValue(bfHasAuthorityProperty);
             // TODO Should this be limited to external URIs, or should we 
             // include internal ones as well? Seems like the latter.
             authorityResourceUri = authorityResource.getURI();

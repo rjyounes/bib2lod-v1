@@ -3,24 +3,16 @@
  */
 package org.ld4l.bib2lod;
 
-import static org.ld4l.bib2lod.Constants.BF_IDENTIFIER_CLASS;
-import static org.ld4l.bib2lod.Constants.BF_INSTANCE_CLASS;
-import static org.ld4l.bib2lod.Constants.BF_LABEL_PROPERTY;
-import static org.ld4l.bib2lod.Constants.BF_TITLE_CLASS;
-import static org.ld4l.bib2lod.Constants.BF_TITLE_PROPERTY;
-import static org.ld4l.bib2lod.Constants.BF_WORK_CLASS;
-import static org.ld4l.bib2lod.Constants.MADSRDFS_AUTHORITY_CLASS;
+import static org.ld4l.bib2lod.Constants.BF_LABEL_URI;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
@@ -45,10 +37,10 @@ abstract class ModelPostProcessor {
         
         // Are we going to need this? Perhaps all statements are added via
         // the Individual.
-        this.assertionsModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+        assertionsModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         // Are we going to need this? There may not be any statements to retract.
         // If there are, they may all be retracted via the Individual.
-        this.retractionsModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+        retractionsModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
     }
     
     protected OntModel getOntModel() {
@@ -106,7 +98,7 @@ abstract class ModelPostProcessor {
          *       ExtendedIterator<Individual> individuals = recordModel.listIndividuals();
          *       while (individuals.hasNext()) {
          *           Individual individual = individuals.next();
-         *           System.out.println(individual.getPropertyValue(BF_LABEL_PROPERTY).toString());
+         *           System.out.println(individual.getPropertyValue(recordModel.getProperty(BF_LABEL_URI).toString());
          *           if (! individual.hasProperty(RDFS.label) ) {
          *              BfIndividual bfIndividual = new BfIndividual(individual);
          *              bfIndividual.addRdfsLabel();
@@ -120,7 +112,7 @@ abstract class ModelPostProcessor {
             Resource subject = subjects.next();
             Literal rdfsLabel = null;
             if (! subject.hasProperty(RDFS.label)) {
-                Statement stmt = subject.getProperty(BF_LABEL_PROPERTY);
+                Statement stmt = subject.getProperty(recordModel.getProperty(BF_LABEL_URI));
                 if (stmt != null) {
                     Literal bfLabel = stmt.getLiteral();
                     rdfsLabel = bfLabel;                 
@@ -129,6 +121,8 @@ abstract class ModelPostProcessor {
 //            if (rdfsLabel == null) {    
 //                String lexicalForm = null;
 //                RDFNode node = null;
+                  // Change from classes/properties to getting the classes/properties
+                  // from the recordModel
 //                if (subject.hasProperty(RDF.type, BF_TITLE_CLASS)) {
 //                    node = subject.getPropertyValue(BF_TITLE_PROPERTY);
 //                } else if (subject.hasProperty(RDF.type, BF_IDENTIFIER_CLASS)) {
@@ -153,9 +147,9 @@ abstract class ModelPostProcessor {
 
     
     /** 
-     * Apply assertions and retractions to this.recordModel.
+     * Apply assertions and retractions to recordModel.
      * 
-     * TODO May not need this if we're adding individuals to this.recordModel.
+     * TODO May not need this if we're adding individuals to recordModel.
      * May still need retractions? Probably not - we're not REMOVING anything
      * from the original record.
      * 

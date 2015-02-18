@@ -1,17 +1,12 @@
 package org.ld4l.bib2lod;
 
-import static org.ld4l.bib2lod.Constants.BF_HAS_AUTHORITY_PROPERTY;
-import static org.ld4l.bib2lod.Constants.BF_LABEL_PROPERTY;
-import static org.ld4l.bib2lod.Constants.BF_PERSON_CLASS;
-import static org.ld4l.bib2lod.Constants.FOAF_NAME_PROPERTY;
-import static org.ld4l.bib2lod.Constants.FOAF_PERSON_CLASS;
-import static org.ld4l.bib2lod.Constants.MADSRDF_IDENTIFIES_RWO_PROPERTY;
-import static org.ld4l.bib2lod.Constants.MADSRDF_IS_IDENTIFIED_BY_AUTHORITY_PROPERTY;
+import static org.ld4l.bib2lod.Constants.*;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
@@ -24,7 +19,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class BfPerson extends BfIndividual  {
     
-    protected Resource bfType = BF_PERSON_CLASS;    
+    protected String bfTypeUri = BF_PERSON_URI;    
 
     protected BfPerson(
             Individual relatedIndividual, Property property, String baseUri) {
@@ -69,29 +64,40 @@ public class BfPerson extends BfIndividual  {
         }
         
         Individual foafPerson = 
-                ontModel.createIndividual(foafPersonUri, FOAF_PERSON_CLASS);
+                ontModel.createIndividual(
+                        foafPersonUri, ontModel.getProperty(FOAF_PERSON_URI));
         
-        Literal bfCreatorLabel = 
-                baseIndividual.getPropertyValue(BF_LABEL_PROPERTY).asLiteral();
-        
-        // TODO Remove dates from label
-        Literal foafPersonName = cleanLabel(bfCreatorLabel);
 
-        foafPerson.addProperty(FOAF_NAME_PROPERTY, foafPersonName);
-        foafPerson.addProperty(RDFS.label, foafPersonName);
-        
-        foafPerson.addProperty(
-                MADSRDF_IS_IDENTIFIED_BY_AUTHORITY_PROPERTY, baseIndividual);
+        RDFNode bfCreatorNode = baseIndividual.getPropertyValue(
+                ontModel.getProperty(BF_LABEL_URI));
+
+        if (bfCreatorNode != null) {
+            Literal bfCreatorLabel = bfCreatorNode.asLiteral();
+            // Remove dates from label
+            // TODO If the foaf:Person has an external namespace, we should get
+            // this data from that resource. Requires a call out to that
+            // namespace (e.g., to the SPARQL endpoint).
+            Literal foafPersonName = cleanLabel(bfCreatorLabel);
+            foafPerson.addProperty(ontModel.getProperty(FOAF_NAME_URI), foafPersonName);
+            foafPerson.addProperty(RDFS.label, foafPersonName);
+        }
+
+        foafPerson.addProperty(ontModel.getProperty(
+                MADSRDF_IS_IDENTIFIED_BY_AUTHORITY_URI), baseIndividual);
         
         // Make the inverse assertion for ingest into systems that don't do
-        // inverse inferencing.
-        baseIndividual.addProperty(MADSRDF_IDENTIFIES_RWO_PROPERTY, foafPerson);
+        // inverse inferencing. 
+        /* NB if recordModel (or allRecords) were an inferencing OntModel, we
+         * wouldn't need to make the inverse assertion. See notes in 
+         * ModelPostProcessor.processRecords() and 
+         * ModelPostProcessor.processRecord().
+         */
+         baseIndividual.addProperty(ontModel.getProperty(
+                 MADSRDF_IDENTIFIES_RWO_URI), foafPerson);
         
         // Remove the bf:hasAuthority relationship to the foaf:Person, because
         // a foaf:Person is not an Authority.  We've just added the appropriate
         // relationship MADSRDF_IDENTIFIES_RWO_PROPERTY.
-        Resource authority = baseIndividual.getPropertyResourceValue(
-                BF_HAS_AUTHORITY_PROPERTY);
         /* Do we also want to delete the bf:hasAuthority relation to a blank
          * node, and the blank node, since we now have a relation to a RWO? For 
          * example:
@@ -108,8 +114,12 @@ public class BfPerson extends BfIndividual  {
          *        <madsrdf:authoritativeLabel>Royer, Caisa Elizabeth.</madsrdf:authoritativeLabel>
          *    </rdf:Description>
          */
+        Property bfHasAuthorityProperty = 
+                ontModel.getProperty(BF_HAS_AUTHORITY_URI);
+        Resource authority = baseIndividual.getPropertyResourceValue(
+                bfHasAuthorityProperty);
         if (authority != null && authority.getURI() == foafPerson.getURI()) {
-            baseIndividual.removeProperty(BF_HAS_AUTHORITY_PROPERTY, authority);
+            baseIndividual.removeProperty(bfHasAuthorityProperty, authority);
         }        
         
         return foafPerson;
