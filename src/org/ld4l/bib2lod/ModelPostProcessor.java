@@ -3,16 +3,24 @@
  */
 package org.ld4l.bib2lod;
 
+import static org.ld4l.bib2lod.Constants.BF_IDENTIFIER_CLASS;
+import static org.ld4l.bib2lod.Constants.BF_INSTANCE_CLASS;
 import static org.ld4l.bib2lod.Constants.BF_LABEL_PROPERTY;
+import static org.ld4l.bib2lod.Constants.BF_TITLE_CLASS;
+import static org.ld4l.bib2lod.Constants.BF_TITLE_PROPERTY;
+import static org.ld4l.bib2lod.Constants.BF_WORK_CLASS;
+import static org.ld4l.bib2lod.Constants.MADSRDFS_AUTHORITY_CLASS;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
@@ -92,7 +100,8 @@ abstract class ModelPostProcessor {
          * class defined in the ontology." There are no classes defined in the ontology.
          * 
          * Once we can work with individuals, we can add this as an instance
-         * method to BfIndividual.
+         * method to BfIndividual. Better yet, we can define new subclasses, 
+         * with each class handling its own label.
          * 
          *       ExtendedIterator<Individual> individuals = recordModel.listIndividuals();
          *       while (individuals.hasNext()) {
@@ -117,22 +126,25 @@ abstract class ModelPostProcessor {
                     rdfsLabel = bfLabel;                 
                 }
             }
-            //if (rdfsLabel == null) {
+//            if (rdfsLabel == null) {    
+//                String lexicalForm = null;
+//                RDFNode node = null;
+//                if (subject.hasProperty(RDF.type, BF_TITLE_CLASS)) {
+//                    node = subject.getPropertyValue(BF_TITLE_PROPERTY);
+//                } else if (subject.hasProperty(RDF.type, BF_IDENTIFIER_CLASS)) {
+//                
+//                } else if (subject.hasProperty(RDF.type, MADSRDFS_AUTHORITY_CLASS)) {
+//                
+//                } else if (subject.hasProperty(RDF.type, BF_INSTANCE_CLASS)) {
+//                // NB Instance can also have titleStatement
+//                
+//                } else if (subject.hasProperty(RDF.type, BF_WORK_CLASS)) {
+//                
+//                } else {
+//                    rdfsLabel = recordModel.createLiteral(subject.getURI());                            
+//                }
+//            }    
                 
-            //} else if (subject.hasProperty(RDF.type, BF_TITLE_CLASS)) {
-                
-            //} else if (subject.hasProperty(RDF.type, BF_IDENTIFIER_CLASS)) {
-                
-            //} else if (subject.hasProperty(RDF.type, MADSRDFS_AUTHORITY_CLASS)) {
-                
-            //} else if (subject.hasProperty(RDF.type, BF_INSTANCE_CLASS)) {
-                // NB Instance can also have titleStatement
-                
-            //} else if (subject.hasProperty(RDF.type, BF_WORK_CLASS)) {
-                
-            //} else {
-             //   rdfsLabel = subject.getURI();
-            //}      
             if (rdfsLabel != null) {
                 subject.addProperty(RDFS.label, rdfsLabel);
             }
