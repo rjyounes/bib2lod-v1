@@ -110,8 +110,7 @@ public class BfPerson extends BfIndividual  {
          */
         if (authority != null && authority.getURI() == foafPerson.getURI()) {
             baseIndividual.removeProperty(BF_HAS_AUTHORITY_PROPERTY, authority);
-        }
-        
+        }        
         
         return foafPerson;
     }

@@ -42,7 +42,8 @@ public class Constants {
     protected static final Resource BF_TITLE_CLASS = 
             ResourceFactory.createResource(BF_TITLE_URI);
     
-    protected static final String BF_IDENTIFIER_URI = BIBFRAME_NS + "Identifier";
+    protected static final String BF_IDENTIFIER_URI = 
+            BIBFRAME_NS + "Identifier";
     protected static final Resource BF_IDENTIFIER_CLASS = 
             ResourceFactory.createResource(BF_IDENTIFIER_URI);    
     
@@ -54,8 +55,19 @@ public class Constants {
     protected static final String BF_CREATOR_URI  = BIBFRAME_NS + "creator";
     protected static final Property BF_CREATOR_PROPERTY = 
             ResourceFactory.createProperty(BF_CREATOR_URI);
+    
+    protected static final String BF_WORK_TITLE_URI  = 
+            BIBFRAME_NS + "workTitle";
+    protected static final Property BF_WORK_TITLE_PROPERTY = 
+            ResourceFactory.createProperty(BF_WORK_TITLE_URI);
+    
+    protected static final String BF_INSTANCE_TITLE_URI  = 
+            BIBFRAME_NS + "instanceTitle";
+    protected static final Property BF_INSTANCE_TITLE_PROPERTY = 
+            ResourceFactory.createProperty(BF_INSTANCE_TITLE_URI);
 
-    protected static final String BF_HAS_AUTHORITY_URI  = BIBFRAME_NS + "hasAuthority";
+    protected static final String BF_HAS_AUTHORITY_URI = 
+            BIBFRAME_NS + "hasAuthority";
     protected static final Property BF_HAS_AUTHORITY_PROPERTY = 
             ResourceFactory.createProperty(BF_HAS_AUTHORITY_URI);
             
@@ -64,10 +76,31 @@ public class Constants {
     protected static final String BF_LABEL_URI = BIBFRAME_NS + "label";
     protected static final Property BF_LABEL_PROPERTY = 
             ResourceFactory.createProperty(BF_LABEL_URI);
+
+    protected static final String BF_TITLE_PROPERTY_URI = 
+            BIBFRAME_NS + "title";
+    protected static final Property BF_TITLE_PROPERTY = 
+            ResourceFactory.createProperty(BF_TITLE_PROPERTY_URI);
     
-    protected static final String BF_TITLE_VALUE_URI = BIBFRAME_NS + "titleValue";
+    protected static final String BF_TITLE_VALUE_URI = 
+            BIBFRAME_NS + "titleValue";
     protected static final Property BF_TITLE_VALUE_PROPERTY = 
-            ResourceFactory.createProperty(BF_TITLE_VALUE_URI);    
+            ResourceFactory.createProperty(BF_TITLE_VALUE_URI);  
+    
+    protected static final String BF_TITLE_STATEMENT_URI = 
+            BIBFRAME_NS + "titleStatement";
+    protected static final Property BF_TITLE_STATEMENT_PROPERTY = 
+            ResourceFactory.createProperty(BF_TITLE_STATEMENT_URI); 
+
+    protected static final String BF_SUBTITLE_URI = 
+            BIBFRAME_NS + "subtitle";
+    protected static final Property BF_SUBTITLE_PROPERTY = 
+            ResourceFactory.createProperty(BF_SUBTITLE_URI); 
+    
+    protected static final String BF_IDENTIFIER_VALUE_URI = 
+            BIBFRAME_NS + "identifierValue";
+    protected static final Property BF_IDENTIFIER_VALUE_PROPERTY = 
+            ResourceFactory.createProperty(BF_IDENTIFIER_VALUE_URI);    
     
     /* FOAF */
     protected static final String FOAF_NS = "http://xmlns.com/foaf/0.1/";
@@ -108,6 +141,7 @@ public class Constants {
             MADSRDF_NS + "authoritativeLabel";
     protected static final Property MADSRDF_AUTHORITATIVE_LABEL_PROPERTY = 
             ResourceFactory.createProperty(MADSRDF_AUTHORITATIVE_LABEL_URI);
+    
     
     /* RELATORS */
     protected static final String RELATORS_NS = 

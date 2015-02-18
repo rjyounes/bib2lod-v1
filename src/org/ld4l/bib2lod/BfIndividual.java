@@ -74,7 +74,7 @@ public class BfIndividual {
         
         if (rdfsLabel == null) {
             OntModel ontModel = baseIndividual.getOntModel();
-            rdfsLabel = ontModel.createLiteral(baseIndividual.getURI(), false);
+            rdfsLabel = ontModel.createLiteral(baseIndividual.getURI());
         }
         
         baseIndividual.addProperty(RDFS.label, rdfsLabel);
