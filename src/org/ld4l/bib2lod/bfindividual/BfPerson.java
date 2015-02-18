@@ -1,4 +1,4 @@
-package org.ld4l.bib2lod;
+package org.ld4l.bib2lod.bfindividual;
 
 import static org.ld4l.bib2lod.Constants.*;
 
@@ -17,15 +17,12 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  *
  */
 
-public class BfPerson extends BfIndividual  {
-    
-    protected String bfTypeUri = BF_PERSON_URI;    
+public class BfPerson extends BfIndividual  { 
 
-    protected BfPerson(
-            Individual relatedIndividual, Property property) {
-        super(relatedIndividual, property);
+    protected BfPerson(Individual baseIndividual) {
+        super(baseIndividual);
     }
-    
+
     protected Literal cleanLabel(Literal bfPersonLabel) {
         // TODO Add transformations
         // Remove dates from label
@@ -33,7 +30,7 @@ public class BfPerson extends BfIndividual  {
         return bfPersonLabel; // TEMPORARY
     }    
     
-    protected Individual createFoafPerson() {
+    public Individual createFoafPerson() {
 
         OntModel ontModel = baseIndividual.getOntModel();
 

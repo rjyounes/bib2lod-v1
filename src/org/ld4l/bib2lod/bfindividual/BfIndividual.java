@@ -1,4 +1,4 @@
-package org.ld4l.bib2lod;
+package org.ld4l.bib2lod.bfindividual;
 
 import static org.ld4l.bib2lod.Constants.*;
 import static org.ld4l.bib2lod.RDFPostProcessor.LOCAL_NAMESPACE;
@@ -22,35 +22,14 @@ public class BfIndividual {
 
     protected Individual baseIndividual;
     protected OntModel ontModel;
-    protected String bfTypeUri = BF_RESOURCE_URI;
-    protected Resource bfType; // = BF_RESOURCE_CLASS;
     protected String baseUri;
       
     protected BfIndividual(Individual baseIndividual) {
         this.baseIndividual = baseIndividual; 
-        setOntModelAndType(baseIndividual);              
-    }
-    
-    protected BfIndividual(
-            Individual relatedIndividual, Property property) {
-         
-        setOntModelAndType(relatedIndividual);
-        
-        Resource bfResource = 
-                relatedIndividual.getPropertyResourceValue(property);  
-        
-        String resourceUri = bfResource.getURI();
-
-        // Get the base Individual from the model.
-        baseIndividual = ontModel.getIndividual(resourceUri);
- 
+        ontModel = baseIndividual.getOntModel();
+        // setOntModelAndType(baseIndividual);
         // The baseUri to be used for minting URIs for new Individuals.
         baseUri = computeBaseUri();
-    }
-    
-    private void setOntModelAndType(Individual individual) {
-        ontModel = individual.getOntModel();
-        bfType = ontModel.getOntProperty(bfTypeUri);
     }
     
     // TODO  Duplicates code in ModelPostProcessor.addRdfsLabels(). Need to 

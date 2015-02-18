@@ -5,12 +5,11 @@ import java.util.List;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
-import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
-class RDFPostProcessor {
+public class RDFPostProcessor {
     
-    protected static String LOCAL_NAMESPACE;
+    public static String LOCAL_NAMESPACE;
     
     protected RDFPostProcessor(String localNamespace) {
         LOCAL_NAMESPACE = localNamespace;
