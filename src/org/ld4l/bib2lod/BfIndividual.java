@@ -1,12 +1,16 @@
 package org.ld4l.bib2lod;
 
-import static org.ld4l.bib2lod.Constants.*;
+import static org.ld4l.bib2lod.Constants.BF_HAS_AUTHORITY_PROPERTY;
+import static org.ld4l.bib2lod.Constants.BF_LABEL_PROPERTY;
+import static org.ld4l.bib2lod.Constants.BF_RESOURCE_CLASS;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
@@ -45,13 +49,22 @@ public class BfIndividual {
 
     }
     
+    // TODO  Duplicates code in ModelPostProcessor.addRdfsLabels(). Need to 
+    // combine.
     protected void addRdfsLabel() {
         Individual baseIndividual = this.baseIndividual;
         
-        String rdfsLabel = null;
+        Literal rdfsLabel = null;
+        Literal bfLabel = null;
         
-        String bfLabel = 
-                baseIndividual.getPropertyValue(BF_LABEL_PROPERTY).asLiteral().getLexicalForm();
+        RDFNode bfLabelNode = 
+                baseIndividual.getPropertyValue(BF_LABEL_PROPERTY);
+        if (bfLabelNode != null) {
+            bfLabel = bfLabelNode.asLiteral();
+            rdfsLabel = bfLabel;
+        } else {
+            // TODO fill in - 
+        }
         
         if (bfLabel != null) {
             rdfsLabel = bfLabel;
@@ -60,7 +73,8 @@ public class BfIndividual {
         }
         
         if (rdfsLabel == null) {
-            rdfsLabel = baseIndividual.getURI();
+            OntModel ontModel = baseIndividual.getOntModel();
+            rdfsLabel = ontModel.createLiteral(baseIndividual.getURI(), false);
         }
         
         baseIndividual.addProperty(RDFS.label, rdfsLabel);

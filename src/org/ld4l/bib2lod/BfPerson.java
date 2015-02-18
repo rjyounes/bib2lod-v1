@@ -1,9 +1,15 @@
 package org.ld4l.bib2lod;
 
-import static org.ld4l.bib2lod.Constants.*;
+import static org.ld4l.bib2lod.Constants.BF_LABEL_PROPERTY;
+import static org.ld4l.bib2lod.Constants.BF_PERSON_CLASS;
+import static org.ld4l.bib2lod.Constants.FOAF_NAME_PROPERTY;
+import static org.ld4l.bib2lod.Constants.FOAF_PERSON_CLASS;
+import static org.ld4l.bib2lod.Constants.MADSRDF_IDENTIFIES_RWO_PROPERTY;
+import static org.ld4l.bib2lod.Constants.MADSRDF_IS_IDENTIFIED_BY_AUTHORITY_PROPERTY;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDFS;
@@ -24,7 +30,7 @@ public class BfPerson extends BfIndividual  {
         super(relatedIndividual, property, baseUri);
     }
     
-    protected String cleanLabel(String bfPersonLabel) {
+    protected Literal cleanLabel(Literal bfPersonLabel) {
         // TODO Add transformations
         // Remove dates from label
         // E.g., <bf:label>Prokofiev, Sergey, 1891-1953.</bf:label>
@@ -64,12 +70,11 @@ public class BfPerson extends BfIndividual  {
         Individual foafPerson = 
                 ontModel.createIndividual(foafPersonUri, FOAF_PERSON_CLASS);
         
-        String bfCreatorLabel = 
-                //((Literal) baseIndividual.getPropertyValue(BF_LABEL_PROPERTY)).getLexicalForm();
-                baseIndividual.getPropertyValue(BF_LABEL_PROPERTY).asLiteral().getLexicalForm();
+        Literal bfCreatorLabel = 
+                baseIndividual.getPropertyValue(BF_LABEL_PROPERTY).asLiteral();
         
         // TODO Remove dates from label
-        String foafPersonName = cleanLabel(bfCreatorLabel);
+        Literal foafPersonName = cleanLabel(bfCreatorLabel);
 
         foafPerson.addProperty(FOAF_NAME_PROPERTY, foafPersonName);
         foafPerson.addProperty(RDFS.label, foafPersonName);

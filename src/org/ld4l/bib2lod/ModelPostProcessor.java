@@ -3,7 +3,7 @@
  */
 package org.ld4l.bib2lod;
 
-import static org.ld4l.bib2lod.Constants.*;
+import static org.ld4l.bib2lod.Constants.BF_LABEL_PROPERTY;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
@@ -13,7 +13,6 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
@@ -54,7 +53,7 @@ abstract class ModelPostProcessor {
     protected OntModel process() {
         processRecord(); 
         addRdfsLabels();
-        applyModelChanges();
+        // applyModelChanges();
         return recordModel;
     }
     
@@ -106,15 +105,16 @@ abstract class ModelPostProcessor {
          *       }
          */
 
+        // MOVE TO BfIndividual instead. we already have that logic there anyway.
         ResIterator subjects = recordModel.listSubjects();
         while (subjects.hasNext()) {
             Resource subject = subjects.next();
-            String rdfsLabel = null;
+            Literal rdfsLabel = null;
             if (! subject.hasProperty(RDFS.label)) {
                 Statement stmt = subject.getProperty(BF_LABEL_PROPERTY);
                 if (stmt != null) {
                     Literal bfLabel = stmt.getLiteral();
-                    rdfsLabel = bfLabel.getLexicalForm();                 
+                    rdfsLabel = bfLabel;                 
                 }
             }
             //if (rdfsLabel == null) {
@@ -126,6 +126,7 @@ abstract class ModelPostProcessor {
             //} else if (subject.hasProperty(RDF.type, MADSRDFS_AUTHORITY_CLASS)) {
                 
             //} else if (subject.hasProperty(RDF.type, BF_INSTANCE_CLASS)) {
+                // NB Instance can also have titleStatement
                 
             //} else if (subject.hasProperty(RDF.type, BF_WORK_CLASS)) {
                 
