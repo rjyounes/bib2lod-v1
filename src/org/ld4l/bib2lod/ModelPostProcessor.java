@@ -78,6 +78,7 @@ abstract class ModelPostProcessor {
     private void addRdfsLabels() {
         // Seems to be the best way to get only instances. It happens that
         // every object instance in Bibframe RDF is also a subject. 
+        // Doesn't include blank nodes. Should they have an rdfs:label?
         ResIterator subjects = recordModel.listSubjects();
         while (subjects.hasNext()) {
             Resource subject = subjects.next();

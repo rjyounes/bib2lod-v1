@@ -13,6 +13,7 @@ public class BfIdentifier extends BfIndividual {
     }
     
     protected void addRdfsLabelByType() {
+        // So far Identifiers are blank nodes, so this won't apply.
         RDFNode identifierValue = baseIndividual.getPropertyValue(
                 ontModel.getProperty(BF_IDENTIFIER_VALUE_URI));
         if (identifierValue != null) {
