@@ -20,6 +20,9 @@ public class BfInstance extends BfIndividual {
     protected void addRdfsLabelByType() {
         
         Literal rdfsLabel = null;
+        
+        // First look for the Title individual. Seems to be more reliably well-
+        // formed, and we also get the subtitle.
         Resource instanceTitle = baseIndividual.getPropertyResourceValue(
                 ontModel.getProperty(BF_INSTANCE_TITLE_URI));
         if (instanceTitle != null) {
@@ -27,10 +30,12 @@ public class BfInstance extends BfIndividual {
             BfTitle bfWorkTitle = new BfTitle(workTitleIndividual);
             rdfsLabel = bfWorkTitle.getRdfsLabel();            
         } else {
+            // Then look for the title datatype property.
             rdfsLabel = getRdfsLabelFromTitleDatatypeProperty();
         } 
         
         if (rdfsLabel == null) {
+            // Then look for the titleStatement datatype property.
             RDFNode titleStatement = baseIndividual.getPropertyValue(
                     ontModel.getProperty(BF_TITLE_STATEMENT_URI));
             if (titleStatement != null) {
@@ -41,6 +46,7 @@ public class BfInstance extends BfIndividual {
         if (rdfsLabel != null) {
             baseIndividual.addProperty(RDFS.label, rdfsLabel);
         } else {
+            // Otherwise use the generic label.
             super.addRdfsLabelByType();
         }
     }

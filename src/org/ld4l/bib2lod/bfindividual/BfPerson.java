@@ -53,7 +53,7 @@ public class BfPerson extends BfIndividual  {
          * rdf:resource="http://vivo.cornell.edu/individual/individual23258"/>
          * 
          * then the getURI() method returns null, which is what we want. That is 
-         * case where we'll mint a new URI ending in "foaf".
+         * the case where we'll mint a new URI ending in "foaf".
          */
         String foafPersonUri = getAuthorityResourceUri();
         if (foafPersonUri == null) {
