@@ -16,21 +16,22 @@ public class BfWork extends BfIndividual {
     }
     
     protected void addRdfsLabelByType() {
+
+        Literal rdfsLabel = null;
+        Resource workTitle = baseIndividual.getPropertyResourceValue(
+                ontModel.getProperty(BF_WORK_TITLE_URI));
+        if (workTitle != null) {
+            Individual workTitleIndividual = ontModel.getIndividual(workTitle.getURI());
+            BfTitle bfWorkTitle = new BfTitle(workTitleIndividual);
+            rdfsLabel = bfWorkTitle.getRdfsLabel();            
+        } else {
+            rdfsLabel = getRdfsLabelFromTitleDatatypeProperty();
+        } 
         
-        addRdfsLabelFromTitleDatatypeProperty();
-        
-        if (! baseIndividual.hasProperty(RDFS.label)) {
-            Literal rdfsLabel = null;
-            Resource workTitle = baseIndividual.getPropertyResourceValue(
-                    ontModel.getProperty(BF_WORK_TITLE_URI));
-            if (workTitle != null) {
-                Individual workTitleIndividual = ontModel.getIndividual(workTitle.getURI());
-                BfTitle bfWorkTitle = new BfTitle(workTitleIndividual);
-                rdfsLabel = bfWorkTitle.getRdfsLabel();
-                baseIndividual.addProperty(RDFS.label, rdfsLabel);
-            } else {
-                super.addRdfsLabelByType();
-            }
+        if (rdfsLabel != null) {
+            baseIndividual.addProperty(RDFS.label, rdfsLabel);
+        } else {
+            super.addRdfsLabelByType();
         }
     }
 }

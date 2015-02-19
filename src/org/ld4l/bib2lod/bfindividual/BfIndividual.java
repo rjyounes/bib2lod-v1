@@ -97,17 +97,19 @@ public class BfIndividual {
     }
     
     // Shared by bfWork and bfInstance
-    protected void addRdfsLabelFromTitleDatatypeProperty() {
+    protected Literal getRdfsLabelFromTitleDatatypeProperty() {
         RDFNode title = baseIndividual.getPropertyValue(
                 ontModel.getProperty(BF_TITLE_PROPERTY_URI));
+        Literal titleLiteral = null;
         if (title != null) {
-            Literal titleLiteral = title.asLiteral();
+            titleLiteral = title.asLiteral();
             String lang = titleLiteral.getLanguage();
             // Exclude these: used for sorting and hashing.
-            if (lang == null || (! lang.equals("x-bf-hash") && ! lang.equals("x-bf-sort"))) {
-                baseIndividual.addLiteral(RDFS.label, title);
+            if (lang != null&& (lang.equals("x-bf-hash") || lang.equals("x-bf-sort"))) {
+                titleLiteral = null;
             } 
         }
+        return titleLiteral;
     } 
     
 }

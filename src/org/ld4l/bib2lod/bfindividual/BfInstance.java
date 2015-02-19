@@ -19,26 +19,29 @@ public class BfInstance extends BfIndividual {
     
     protected void addRdfsLabelByType() {
         
-        addRdfsLabelFromTitleDatatypeProperty();
-
-        if (! baseIndividual.hasProperty(RDFS.label)) {
+        Literal rdfsLabel = null;
+        Resource instanceTitle = baseIndividual.getPropertyResourceValue(
+                ontModel.getProperty(BF_INSTANCE_TITLE_URI));
+        if (instanceTitle != null) {
+            Individual workTitleIndividual = ontModel.getIndividual(instanceTitle.getURI());
+            BfTitle bfWorkTitle = new BfTitle(workTitleIndividual);
+            rdfsLabel = bfWorkTitle.getRdfsLabel();            
+        } else {
+            rdfsLabel = getRdfsLabelFromTitleDatatypeProperty();
+        } 
+        
+        if (rdfsLabel == null) {
             RDFNode titleStatement = baseIndividual.getPropertyValue(
                     ontModel.getProperty(BF_TITLE_STATEMENT_URI));
             if (titleStatement != null) {
-                baseIndividual.addLiteral(RDFS.label, titleStatement.asLiteral());
-            } else {               
-                Literal rdfsLabel = null;
-                Resource instanceTitle = baseIndividual.getPropertyResourceValue(
-                        ontModel.getProperty(BF_INSTANCE_TITLE_URI));
-                if (instanceTitle != null) {
-                    Individual instanceTitleIndividual = ontModel.getIndividual(instanceTitle.getURI());
-                    BfTitle bfWorkTitle = new BfTitle(instanceTitleIndividual);
-                    rdfsLabel = bfWorkTitle.getRdfsLabel();
-                    baseIndividual.addProperty(RDFS.label, rdfsLabel);
-                } else {
-                    super.addRdfsLabelByType();
-                } 
+                rdfsLabel = titleStatement.asLiteral();              
             }
+        } 
+        
+        if (rdfsLabel != null) {
+            baseIndividual.addProperty(RDFS.label, rdfsLabel);
+        } else {
+            super.addRdfsLabelByType();
         }
     }
 }
