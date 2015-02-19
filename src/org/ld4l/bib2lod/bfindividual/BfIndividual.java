@@ -38,7 +38,7 @@ public class BfIndividual {
         baseUri = computeBaseUri();
     }    
     
-    protected Individual getBaseIndividual() {
+    public Individual getBaseIndividual() {
         return baseIndividual;
     }
     
