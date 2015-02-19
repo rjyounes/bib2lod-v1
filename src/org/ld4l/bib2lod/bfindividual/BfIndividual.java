@@ -97,7 +97,8 @@ public class BfIndividual {
     }
     
     // Shared by bfWork and bfInstance
-    protected Literal getRdfsLabelFromTitleDatatypeProperty() {
+    protected Literal getTitleDatatypePropertyValue() {
+        
         RDFNode title = baseIndividual.getPropertyValue(
                 ontModel.getProperty(BF_TITLE_PROPERTY_URI));
         Literal titleLiteral = null;
@@ -109,6 +110,7 @@ public class BfIndividual {
                 titleLiteral = null;
             } 
         }
+        
         return titleLiteral;
     } 
     
