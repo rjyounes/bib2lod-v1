@@ -15,11 +15,7 @@ public class RDFPostProcessor {
         LOCAL_NAMESPACE = localNamespace;
     }
     
-    protected OntModel processRecords(List<InputStream> records, 
-            List<InputStream> ontologies) {
-               
-        OntModel ontologyModel = 
-                ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM); 
+    protected OntModel processRecords(List<InputStream> records) { 
         
         /* 
          * Consider making this or recordModel an inferencing model, so we don't, 
@@ -35,7 +31,7 @@ public class RDFPostProcessor {
                 ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM); 
         
         for (InputStream record : records) {
-            OntModel processedRecordModel = processRecord(record, ontologyModel);
+            OntModel processedRecordModel = processRecord(record);
             // OK to call add if processedRecordModel is null, or test for
             // non-null value first?
             allRecords.add(processedRecordModel);
@@ -44,7 +40,7 @@ public class RDFPostProcessor {
         return allRecords;
     }
     
-    protected OntModel processRecord(InputStream record, OntModel ontologyModel)  {
+    protected OntModel processRecord(InputStream record)  {
 
         /* 
          * Consider making this or allRecords an inferencing model, so we don't, 
@@ -64,22 +60,14 @@ public class RDFPostProcessor {
         // Default serialization = RDF/XML.
         recordModel.read(record, LOCAL_NAMESPACE, null);
         
-        // TODO Remove the parts of the ontologies (except Bibframe and LD4L)
-        // that we're not using, so there are fewer statements to add to and 
-        // remove from recordModel.
-        recordModel.addSubModel(ontologyModel);
-        
         ModelPostProcessor p = 
-                ModelPostProcessorFactory.createModelPostProcessor(recordModel);
-                         
+                ModelPostProcessorFactory.createModelPostProcessor(recordModel);                       
 
         if (p == null) {
             return null;
         }
+        
         OntModel processedRecordModel = p.process();
-        // Here is where rebinding inferences would take place, if recordModel
-        // were an inferencing model.
-        processedRecordModel.remove(ontologyModel);
         return processedRecordModel;
     }
 

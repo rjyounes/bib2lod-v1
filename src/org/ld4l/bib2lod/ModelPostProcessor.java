@@ -3,16 +3,15 @@
  */
 package org.ld4l.bib2lod;
 
-import static org.ld4l.bib2lod.Constants.BF_LABEL_URI;
+import org.ld4l.bib2lod.bfindividual.BfIndividual;
+import org.ld4l.bib2lod.bfindividual.BfIndividualFactory;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
-import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
@@ -60,7 +59,7 @@ abstract class ModelPostProcessor {
     protected abstract void processRecord();
     
     /**
-     * Add rdfs:label to any resources in the model that don't have one.
+     * Add rdfs:label to any instances in the model that don't have one.
      * 
      * Needed for Vitro. Should probably be done during Vitro ingest, but it's
      * not clear at the moment how to hook into the Vitro RDF ingest code.
@@ -77,57 +76,19 @@ abstract class ModelPostProcessor {
      * label. CHECK THIS OUT.    
      */
     private void addRdfsLabels() {
-        
-
-         /* 
-         *       ExtendedIterator<Individual> individuals = recordModel.listIndividuals();
-         *       while (individuals.hasNext()) {
-         *           Individual individual = individuals.next();
-         *           System.out.println(individual.getPropertyValue(recordModel.getProperty(BF_LABEL_URI).toString());
-         *           if (! individual.hasProperty(RDFS.label) ) {
-         *              BfIndividual bfIndividual = new BfIndividual(individual);
-         *              bfIndividual.addRdfsLabel();
-         *           }
-         *       }
-         */
-
-        // MOVE TO BfIndividual instead. we already have that logic there anyway.
+        // Seems to be the best way to get only instances. It happens that
+        // every object instance in Bibframe RDF is also a subject. 
         ResIterator subjects = recordModel.listSubjects();
         while (subjects.hasNext()) {
             Resource subject = subjects.next();
-            Literal rdfsLabel = null;
-            if (! subject.hasProperty(RDFS.label)) {
-                Statement stmt = subject.getProperty(recordModel.getProperty(BF_LABEL_URI));
-                if (stmt != null) {
-                    Literal bfLabel = stmt.getLiteral();
-                    rdfsLabel = bfLabel;                 
-                }
+            String uri = subject.getURI();
+            if (uri != null) {
+                Individual individual = recordModel.getIndividual(subject.getURI());
+                BfIndividual bfIndividual = 
+                        BfIndividualFactory.createBfIndividual(individual);
+                bfIndividual.addRdfsLabel();  
             }
-//            if (rdfsLabel == null) {    
-//                String lexicalForm = null;
-//                RDFNode node = null;
-                  // Change from classes/properties to getting the classes/properties
-                  // from the recordModel
-//                if (subject.hasProperty(RDF.type, BF_TITLE_CLASS)) {
-//                    node = subject.getPropertyValue(BF_TITLE_PROPERTY);
-//                } else if (subject.hasProperty(RDF.type, BF_IDENTIFIER_CLASS)) {
-//                
-//                } else if (subject.hasProperty(RDF.type, MADSRDFS_AUTHORITY_CLASS)) {
-//                
-//                } else if (subject.hasProperty(RDF.type, BF_INSTANCE_CLASS)) {
-//                // NB Instance can also have titleStatement
-//                
-//                } else if (subject.hasProperty(RDF.type, BF_WORK_CLASS)) {
-//                
-//                } else {
-//                    rdfsLabel = recordModel.createLiteral(subject.getURI());                            
-//                }
-//            }    
-                
-            if (rdfsLabel != null) {
-                subject.addProperty(RDFS.label, rdfsLabel);
-            }
-        }
+        }       
     }
 
     

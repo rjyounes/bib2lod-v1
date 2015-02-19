@@ -12,7 +12,6 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -48,12 +47,9 @@ public class Bib2Lod {
          
         List<InputStream> records = readFiles(readdir);
         
-        File ontologyDir = new File("ontologies");
-        List<InputStream> ontologies = readFiles(ontologyDir.getCanonicalPath());
-        
         // Process the RDF input files and receive a union model for printing.
         RDFPostProcessor p = new RDFPostProcessor(localNamespace);
-        Model allRecords = p.processRecords(records, ontologies);
+        Model allRecords = p.processRecords(records);
         
         // Write out the union model to a file.
         try {

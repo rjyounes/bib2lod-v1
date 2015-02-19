@@ -22,6 +22,7 @@ public class Constants {
             BIBFRAME_NS + "Identifier";
     public static final String BF_PERSON_URI = BIBFRAME_NS + "Person";
 
+
     
     /* BIBFRAME object properties */    
     public static final String BF_CREATOR_URI  = BIBFRAME_NS + "creator"; 
@@ -43,7 +44,9 @@ public class Constants {
     public static final String BF_SUBTITLE_URI = BIBFRAME_NS + "subtitle"; 
     public static final String BF_IDENTIFIER_VALUE_URI = 
             BIBFRAME_NS + "identifierValue";
-   
+    public static final String BF_AUTHORIZED_ACCESS_POINT_URI = 
+            BIBFRAME_NS + "authorizedAccessPoint";
+    
     
     /* FOAF */
     public static final String FOAF_NS = "http://xmlns.com/foaf/0.1/";

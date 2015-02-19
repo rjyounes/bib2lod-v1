@@ -1,6 +1,8 @@
 package org.ld4l.bib2lod.bfindividual;
 
-import static org.ld4l.bib2lod.Constants.*;
+import static org.ld4l.bib2lod.Constants.BF_HAS_AUTHORITY_URI;
+import static org.ld4l.bib2lod.Constants.BF_LABEL_URI;
+import static org.ld4l.bib2lod.Constants.BF_TITLE_PROPERTY_URI;
 import static org.ld4l.bib2lod.RDFPostProcessor.LOCAL_NAMESPACE;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +13,7 @@ import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 /** Decorator of class Individual The BfIndividual wraps the Jena Individual to 
@@ -33,39 +36,7 @@ public class BfIndividual {
         // setOntModelAndType(baseIndividual);
         // The baseUri to be used for minting URIs for new Individuals.
         baseUri = computeBaseUri();
-    }
-    
-    // TODO  Duplicates code in ModelPostProcessor.addRdfsLabels(). Need to 
-    // combine.
-    protected void addRdfsLabel() {
-        
-        Literal rdfsLabel = null;
-        Literal bfLabel = null;
-        
-        Property bfLabelProperty = ontModel.getOntProperty(BF_LABEL_URI);
-        RDFNode bfLabelNode = 
-                baseIndividual.getPropertyValue(bfLabelProperty);
-        if (bfLabelNode != null) {
-            bfLabel = bfLabelNode.asLiteral();
-            rdfsLabel = bfLabel;
-        } else {
-            // TODO fill in - 
-        }
-        
-        if (bfLabel != null) {
-            rdfsLabel = bfLabel;
-        } else {
-            // TODO Fill in
-        }
-        
-        if (rdfsLabel == null) {
-            OntModel ontModel = baseIndividual.getOntModel();
-            rdfsLabel = ontModel.createLiteral(baseIndividual.getURI());
-        }
-        
-        baseIndividual.addProperty(RDFS.label, rdfsLabel);
-        
-    }
+    }    
     
     protected Individual getBaseIndividual() {
         return baseIndividual;
@@ -105,8 +76,38 @@ public class BfIndividual {
             authorityResourceUri = authorityResource.getURI();
         }
         return authorityResourceUri;
+    }
+
+    public void addRdfsLabel() {
+        
+        if (! baseIndividual.hasProperty(RDFS.label)) {
+            Property property = ontModel.getProperty(BF_LABEL_URI);
+            RDFNode bfLabelNode = baseIndividual.getPropertyValue(property);
+            if (bfLabelNode != null) {
+                Literal bfLabel = bfLabelNode.asLiteral();
+                baseIndividual.addLiteral(RDFS.label, bfLabel);                 
+            } else {                    
+                addRdfsLabelByType();
+            }
+        }
+    }
+    
+    protected void addRdfsLabelByType() {
+        baseIndividual.addLiteral(RDFS.label, baseIndividual.getURI());
+    }
+    
+    // Shared by bfWork and bfInstance
+    protected void addRdfsLabelFromTitleDatatypeProperty() {
+        RDFNode title = baseIndividual.getPropertyValue(
+                ontModel.getProperty(BF_TITLE_PROPERTY_URI));
+        if (title != null) {
+            Literal titleLiteral = title.asLiteral();
+            String lang = titleLiteral.getLanguage();
+            // Exclude these: used for sorting and hashing.
+            if (lang == null || (! lang.equals("x-bf-hash") && ! lang.equals("x-bf-sort"))) {
+                baseIndividual.addLiteral(RDFS.label, title);
+            } 
+        }
     } 
     
-
-
 }

@@ -58,8 +58,6 @@ public class BfIndividualFactory {
         Individual object = ontModel.getIndividual(resourceUri);
         
         return createBfIndividual(object);
-
     }
-    
 
 }

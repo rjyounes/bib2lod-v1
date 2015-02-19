@@ -122,4 +122,14 @@ public class BfPerson extends BfIndividual  {
         return foafPerson;
     }
 
+    protected void addRdfsLabelByType() {
+        
+        RDFNode authorizedAccessPoint = baseIndividual.getPropertyValue(
+                ontModel.getProperty(BF_AUTHORIZED_ACCESS_POINT_URI));
+        if (authorizedAccessPoint != null) {
+            baseIndividual.addLiteral(RDFS.label, authorizedAccessPoint.asLiteral());
+        } else {
+            super.addRdfsLabelByType();
+        }
+    }
 }

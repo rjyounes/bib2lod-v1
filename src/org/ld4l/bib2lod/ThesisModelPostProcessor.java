@@ -35,7 +35,7 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
         // Apparently no difference between these two, other than addOntClass() 
         // is a method on Individual while addRDFType() is a method on 
         // OntResource.
-        // bfWork.addRDFType(LD4L_THESIS_CLASS);
+        // bfWork.addRDFType(recordModel.getProperty(LD4L_THESIS_URI));
         bfWork.addOntClass(recordModel.getProperty(LD4L_THESIS_URI));
     }
 
