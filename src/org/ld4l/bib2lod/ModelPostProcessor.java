@@ -49,6 +49,7 @@ abstract class ModelPostProcessor {
      * Controls overall flow common to all types of post-processors.
      */
     protected OntModel process() {
+        processRecordGeneric();
         processRecord(); 
         addRdfsLabels();
         // applyModelChanges();
@@ -57,6 +58,45 @@ abstract class ModelPostProcessor {
     
     // Each subclass must define its own processRecord method.
     protected abstract void processRecord();
+    
+    // For processing common to all post-processor types.
+    protected void processRecordGeneric() {
+
+        // First create BfWork wrapper for bfWork by calling 
+        // BfIndividualModelFactory.
+        // NB May want to store this individual so we can refer to it as 
+        // needed
+        // Then do any modifications of bfLabels. See below - kind of a 
+        // workaround for current structure where we automatically apply
+        // bfLabel to rdfsLabel if it exists. Better: don't automatically 
+        // transfer bflabel to rdfslabel. Do this in the instance methods of the 
+        // classes, so each type can decide whether it wants to do this, and how 
+        // to prioritize the different options for creating an rdfs:label.
+        // fixBfLabels();
+    }
+    
+    
+    protected void fixBfLabels() {
+        // Applies to instances to 
+        // Retract old bflabel, add this as bflabel, so it also gets added
+        // to rdfs:label. Explain this as easier way because it follows 
+        // code flow better. Later: don't automatically transfer bflabel to
+        // rdfslabel. Do this in the instance methods of the classes, so each
+        // type can decide whether it wants to do this, and how to prioritize
+        // the different options for creating an rdfs:label.
+        
+        // 1. get instances of the work, using bf:instanceOf property. NB
+        // bf:hasInstance is not on the work. Use Resource.listProperties to
+        // return StmtIterator and get the subjects with this bfWork as object.
+        // 2. get bf:label of instances
+        // 3. If it reads "Electronic Resource", get bfWork title using
+        // BfWork.getWorkTitle().
+        // 4. Change bflabel to title + " - Electronic resource"
+        // 5. Retract old bflabel
+        // 5. Set rdfs label as well - or leave till later when it will be
+        // picked up by the regular process.
+        
+    }
     
     /**
      * Add rdfs:label to any instances in the model that don't have one.

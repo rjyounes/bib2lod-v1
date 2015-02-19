@@ -32,7 +32,11 @@ public class Constants {
             BIBFRAME_NS + "instanceTitle";
     public static final String BF_HAS_AUTHORITY_URI = 
             BIBFRAME_NS + "hasAuthority";
-
+    public static final String BF_HAS_INSTANCE_URI = 
+            BIBFRAME_NS + "hasInstance";
+    public static final String BF_INSTANCE_OF_URI = 
+            BIBFRAME_NS + "instanceOf";
+    
                 
     /* BIBFRAME datatype properties */   
     public static final String BF_LABEL_URI = BIBFRAME_NS + "label";
