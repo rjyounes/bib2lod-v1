@@ -20,7 +20,7 @@ public class BfWork extends BfIndividual {
         addRdfsLabelFromTitleDatatypeProperty();
         
         if (! baseIndividual.hasProperty(RDFS.label)) {
-            String rdfsLabel = null;
+            Literal rdfsLabel = null;
             Resource workTitle = baseIndividual.getPropertyResourceValue(
                     ontModel.getProperty(BF_WORK_TITLE_URI));
             if (workTitle != null) {

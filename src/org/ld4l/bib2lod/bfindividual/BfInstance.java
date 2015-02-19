@@ -27,7 +27,7 @@ public class BfInstance extends BfIndividual {
             if (titleStatement != null) {
                 baseIndividual.addLiteral(RDFS.label, titleStatement.asLiteral());
             } else {               
-                String rdfsLabel = null;
+                Literal rdfsLabel = null;
                 Resource instanceTitle = baseIndividual.getPropertyResourceValue(
                         ontModel.getProperty(BF_INSTANCE_TITLE_URI));
                 if (instanceTitle != null) {
