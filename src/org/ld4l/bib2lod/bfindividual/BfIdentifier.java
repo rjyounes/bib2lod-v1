@@ -1,6 +1,6 @@
 package org.ld4l.bib2lod.bfindividual;
 
-import static org.ld4l.bib2lod.Constants.BF_IDENTIFIER_VALUE_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_IDENTIFIER_VALUE_URI;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.rdf.model.RDFNode;

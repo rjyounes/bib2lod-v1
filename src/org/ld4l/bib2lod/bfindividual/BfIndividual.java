@@ -1,11 +1,11 @@
 package org.ld4l.bib2lod.bfindividual;
 
-import static org.ld4l.bib2lod.Constants.BF_HAS_AUTHORITY_URI;
-import static org.ld4l.bib2lod.Constants.BF_LABEL_URI;
-import static org.ld4l.bib2lod.Constants.BF_TITLE_PROPERTY_URI;
-import static org.ld4l.bib2lod.Constants.BF_TITLE_URI;
-import static org.ld4l.bib2lod.Constants.BF_TITLE_VALUE_URI;
-import static org.ld4l.bib2lod.RDFPostProcessor.LOCAL_NAMESPACE;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_HAS_AUTHORITY_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_LABEL_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_TITLE_PROPERTY_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_TITLE_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_TITLE_VALUE_URI;
+import static org.ld4l.bib2lod.postprocessor.RDFPostProcessor.LOCAL_NAMESPACE;
 
 import org.apache.commons.lang3.StringUtils;
 

@@ -1,11 +1,11 @@
 package org.ld4l.bib2lod.bfindividual;
 
-import static org.ld4l.bib2lod.Constants.BF_IDENTIFIER_URI;
-import static org.ld4l.bib2lod.Constants.BF_INSTANCE_URI;
-import static org.ld4l.bib2lod.Constants.BF_PERSON_URI;
-import static org.ld4l.bib2lod.Constants.BF_TITLE_URI;
-import static org.ld4l.bib2lod.Constants.BF_WORK_URI;
-import static org.ld4l.bib2lod.Constants.MADSRDF_AUTHORITY_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_IDENTIFIER_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_INSTANCE_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_PERSON_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_TITLE_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_WORK_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.MADSRDF_AUTHORITY_URI;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;

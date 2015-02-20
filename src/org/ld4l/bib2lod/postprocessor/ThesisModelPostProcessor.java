@@ -1,13 +1,13 @@
 /**
  * 
  */
-package org.ld4l.bib2lod;
+package org.ld4l.bib2lod.postprocessor;
 
-import static org.ld4l.bib2lod.Constants.BF_CREATOR_URI;
-import static org.ld4l.bib2lod.Constants.LD4L_AUTHOR_OF_URI;
-import static org.ld4l.bib2lod.Constants.LD4L_THESIS_URI;
-import static org.ld4l.bib2lod.Constants.PAV_AUTHORED_BY_URI;
-import static org.ld4l.bib2lod.Constants.RELATORS_THS_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_CREATOR_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.LD4L_AUTHOR_OF_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.LD4L_THESIS_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.PAV_AUTHORED_BY_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.RELATORS_THS_URI;
 
 import org.ld4l.bib2lod.bfindividual.BfIndividualFactory;
 import org.ld4l.bib2lod.bfindividual.BfPerson;

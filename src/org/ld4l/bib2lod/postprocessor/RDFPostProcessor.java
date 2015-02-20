@@ -1,4 +1,4 @@
-package org.ld4l.bib2lod;
+package org.ld4l.bib2lod.postprocessor;
 
 import java.io.InputStream;
 import java.util.List;
@@ -11,11 +11,11 @@ public class RDFPostProcessor {
     
     public static String LOCAL_NAMESPACE;
     
-    protected RDFPostProcessor(String localNamespace) {
+    public RDFPostProcessor(String localNamespace) {
         LOCAL_NAMESPACE = localNamespace;
     }
     
-    protected OntModel processRecords(List<InputStream> records) { 
+    public OntModel processRecords(List<InputStream> records) { 
         
         /* 
          * Consider making this or recordModel an inferencing model, so we don't, 

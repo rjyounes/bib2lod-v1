@@ -1,6 +1,6 @@
-package org.ld4l.bib2lod;
+package org.ld4l.bib2lod.postprocessor;
 
-import static org.ld4l.bib2lod.Constants.*;
+import static org.ld4l.bib2lod.postprocessor.Constants.*;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;

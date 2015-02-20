@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.ld4l.bib2lod.postprocessor.RDFPostProcessor;
+
 import com.hp.hpl.jena.rdf.model.Model;
 
 public class Bib2Lod {

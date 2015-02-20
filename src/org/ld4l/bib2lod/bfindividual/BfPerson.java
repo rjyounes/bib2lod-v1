@@ -1,12 +1,12 @@
 package org.ld4l.bib2lod.bfindividual;
 
-import static org.ld4l.bib2lod.Constants.BF_AUTHORIZED_ACCESS_POINT_URI;
-import static org.ld4l.bib2lod.Constants.BF_HAS_AUTHORITY_URI;
-import static org.ld4l.bib2lod.Constants.BF_LABEL_URI;
-import static org.ld4l.bib2lod.Constants.FOAF_NAME_URI;
-import static org.ld4l.bib2lod.Constants.FOAF_PERSON_URI;
-import static org.ld4l.bib2lod.Constants.MADSRDF_IDENTIFIES_RWO_URI;
-import static org.ld4l.bib2lod.Constants.MADSRDF_IS_IDENTIFIED_BY_AUTHORITY_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_AUTHORIZED_ACCESS_POINT_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_HAS_AUTHORITY_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_LABEL_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.FOAF_NAME_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.FOAF_PERSON_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.MADSRDF_IDENTIFIES_RWO_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.MADSRDF_IS_IDENTIFIED_BY_AUTHORITY_URI;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

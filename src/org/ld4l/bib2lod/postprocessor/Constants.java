@@ -1,4 +1,4 @@
-package org.ld4l.bib2lod;
+package org.ld4l.bib2lod.postprocessor;
 
 /**
  * Define constants for the package; mostly URIs for ontology resources.

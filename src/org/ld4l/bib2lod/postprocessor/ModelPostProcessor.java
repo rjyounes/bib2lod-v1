@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.ld4l.bib2lod;
+package org.ld4l.bib2lod.postprocessor;
 
 import org.ld4l.bib2lod.bfindividual.BfIndividual;
 import org.ld4l.bib2lod.bfindividual.BfIndividualFactory;
