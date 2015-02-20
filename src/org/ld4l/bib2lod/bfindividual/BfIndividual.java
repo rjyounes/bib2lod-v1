@@ -104,36 +104,9 @@ public class BfIndividual {
         }
     }
     
-    // TODO Create new parent class of BfWork and BfTitle, that subclasses
-    // BfIndividual, to store common methods related to title, etc.
-    protected Literal getTitleDatatypePropertyValue() {
-        
-        RDFNode title = baseIndividual.getPropertyValue(
-                recordModel.getProperty(BF_TITLE_PROPERTY_URI));
-        Literal titleLiteral = null;
-        if (title != null) {
-            titleLiteral = title.asLiteral();
-            String lang = titleLiteral.getLanguage();
-            // Exclude these: used for sorting and hashing.
-            if (lang != null && (lang.equals("x-bf-hash") || lang.equals("x-bf-sort"))) {
-                titleLiteral = null;
-            } 
-        }
-        
-        return titleLiteral;
-    } 
 
-    // TODO Create new parent class of BfWork and BfTitle, that subclasses
-    // BfIndividual, to store common methods related to title, etc.
-    protected Individual createNewTitle(String uri, String titleValue) {
-        
-        Resource titleClass = recordModel.getResource(BF_TITLE_URI);
-        Property titleValueProperty = recordModel.getProperty(BF_TITLE_VALUE_URI);
-        Individual titleIndividual = recordModel.createIndividual(uri, titleClass);
-        titleIndividual.addProperty(titleValueProperty, titleValue);
-        return titleIndividual;        
-    }
-    
+
+
     protected Literal getNewLiteral(Literal original, String newLexicalForm) {
         Literal newLiteral = null;
         String lang = original.getLanguage();
@@ -145,7 +118,6 @@ public class BfIndividual {
         
         return newLiteral;
         
-    }
-    
+    }    
     
 }

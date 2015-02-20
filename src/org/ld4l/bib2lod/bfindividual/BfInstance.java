@@ -11,6 +11,8 @@ import static org.ld4l.bib2lod.Constants.BF_TITLE_URI;
 import static org.ld4l.bib2lod.Constants.BF_TITLE_VALUE_URI;
 import static org.ld4l.bib2lod.Constants.BF_WORK_TITLE_URI;
 
+import org.ld4l.bib2lod.BfWorkObject;
+
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -28,7 +30,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * defining a common TITLE_OBJECT_PROPERTY with different values in the two 
  * classes.
  */
-public class BfInstance extends BfIndividual {
+public class BfInstance extends BfWorkObject {
    
     private static String ELECTRONIC_RESOURCE = "Electronic Resource";
     
@@ -71,7 +73,7 @@ public class BfInstance extends BfIndividual {
                                     RDFS.label, bfLabelLiteral);
                             baseIndividual.addProperty(RDFS.label, newLiteral);
                             // Also assign this value to the Instance's title.
-                            String uri = baseIndividual.getURI() + "title";
+                            String uri = baseIndividual.getURI() + "title1";
                             Individual titleIndividual = 
                                     createNewTitle(uri, title); 
                             baseIndividual.addProperty(recordModel.getProperty(
