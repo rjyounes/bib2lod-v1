@@ -3,6 +3,8 @@ package org.ld4l.bib2lod.bfindividual;
 import static org.ld4l.bib2lod.Constants.BF_HAS_AUTHORITY_URI;
 import static org.ld4l.bib2lod.Constants.BF_LABEL_URI;
 import static org.ld4l.bib2lod.Constants.BF_TITLE_PROPERTY_URI;
+import static org.ld4l.bib2lod.Constants.BF_TITLE_URI;
+import static org.ld4l.bib2lod.Constants.BF_TITLE_VALUE_URI;
 import static org.ld4l.bib2lod.RDFPostProcessor.LOCAL_NAMESPACE;
 
 import org.apache.commons.lang3.StringUtils;
@@ -102,7 +104,8 @@ public class BfIndividual {
         }
     }
     
-    // Shared by bfWork and bfInstance
+    // TODO Create new parent class of BfWork and BfTitle, that subclasses
+    // BfIndividual, to store common methods related to title, etc.
     protected Literal getTitleDatatypePropertyValue() {
         
         RDFNode title = baseIndividual.getPropertyValue(
@@ -112,12 +115,37 @@ public class BfIndividual {
             titleLiteral = title.asLiteral();
             String lang = titleLiteral.getLanguage();
             // Exclude these: used for sorting and hashing.
-            if (lang != null&& (lang.equals("x-bf-hash") || lang.equals("x-bf-sort"))) {
+            if (lang != null && (lang.equals("x-bf-hash") || lang.equals("x-bf-sort"))) {
                 titleLiteral = null;
             } 
         }
         
         return titleLiteral;
     } 
+
+    // TODO Create new parent class of BfWork and BfTitle, that subclasses
+    // BfIndividual, to store common methods related to title, etc.
+    protected Individual createNewTitle(String uri, String titleValue) {
+        
+        Resource titleClass = recordModel.getResource(BF_TITLE_URI);
+        Property titleValueProperty = recordModel.getProperty(BF_TITLE_VALUE_URI);
+        Individual titleIndividual = recordModel.createIndividual(uri, titleClass);
+        titleIndividual.addProperty(titleValueProperty, titleValue);
+        return titleIndividual;        
+    }
+    
+    protected Literal getNewLiteral(Literal original, String newLexicalForm) {
+        Literal newLiteral = null;
+        String lang = original.getLanguage();
+        if (lang == null) {
+            newLiteral = recordModel.createLiteral(newLexicalForm);
+        } else {
+            newLiteral = recordModel.createLiteral(newLexicalForm, lang);
+        }
+        
+        return newLiteral;
+        
+    }
+    
     
 }
