@@ -12,15 +12,19 @@ public class BfIdentifier extends BfIndividual {
         super(baseIndividual);
     }
     
-    protected void addRdfsLabelByType() {
-        // So far Identifiers are blank nodes, so this won't apply.
-        RDFNode identifierValue = baseIndividual.getPropertyValue(
-                recordModel.getProperty(BF_IDENTIFIER_VALUE_URI));
-        if (identifierValue != null) {
-      
-            baseIndividual.addLiteral(RDFS.label, identifierValue.asLiteral());
-        } else {
-            super.addRdfsLabelByType();
+    public void addRdfsLabel() {
+        
+        assignDefaultRdfsLabel();
+        
+        if (! baseIndividual.hasProperty(RDFS.label)) {           
+            // So far Identifiers are blank nodes, so this won't apply.
+            RDFNode identifierValue = baseIndividual.getPropertyValue(
+                    recordModel.getProperty(BF_IDENTIFIER_VALUE_URI));
+            if (identifierValue != null) {      
+                baseIndividual.addLiteral(RDFS.label, identifierValue.asLiteral());
+            } else {
+                super.addRdfsLabel();
+            }
         }
     }
 }

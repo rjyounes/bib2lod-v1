@@ -25,7 +25,7 @@ public class Constants {
     public static final String BF_IDENTIFIER_URI = 
             BIBFRAME_NS + "Identifier";
     public static final String BF_PERSON_URI = BIBFRAME_NS + "Person";
-
+    public static final String BF_ELECTRONIC_URI = BIBFRAME_NS + "Electronic";
 
     
     /* BIBFRAME object properties */    

@@ -162,14 +162,20 @@ public class BfPerson extends BfIndividual  {
         return foafPerson;
     }
 
-    protected void addRdfsLabelByType() {
+    public void addRdfsLabel() {
         
-        RDFNode authorizedAccessPoint = baseIndividual.getPropertyValue(
-                recordModel.getProperty(BF_AUTHORIZED_ACCESS_POINT_URI));
-        if (authorizedAccessPoint != null) {
-            baseIndividual.addLiteral(RDFS.label, authorizedAccessPoint.asLiteral());
-        } else {
-            super.addRdfsLabelByType();
+        assignDefaultRdfsLabel();
+
+        // If no label was assigned in assignDefaultLabel()
+        if (! baseIndividual.hasProperty(RDFS.label)) { 
+            
+            RDFNode authorizedAccessPoint = baseIndividual.getPropertyValue(
+                    recordModel.getProperty(BF_AUTHORIZED_ACCESS_POINT_URI));
+            if (authorizedAccessPoint != null) {
+                baseIndividual.addLiteral(RDFS.label, authorizedAccessPoint.asLiteral());
+            } else {
+                super.addRdfsLabel();
+            }
         }
     }
 }

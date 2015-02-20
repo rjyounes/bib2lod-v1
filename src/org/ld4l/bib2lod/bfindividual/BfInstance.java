@@ -14,7 +14,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 /* TODO Create common superclass for BfWork and BfInstance, as a subclass of
  * BfIndividual. This would allow code-sharing between the two, without putting
  * common code into BfIndividual, which doesn't make sense. They could share
- * addRdfsLabelByType() and getTitleDatatypePropertyValue(), while each
+ * addRdfsLabel() and getTitleDatatypePropertyValue(), while each
  * having their own getWorkTitle() and getInstanceTitle(). Even parts of the
  * latter could be shared by using callouts to superclass methods and/or 
  * defining a common TITLE_OBJECT_PROPERTY with different values in the two 
@@ -26,15 +26,28 @@ public class BfInstance extends BfIndividual {
         super(baseIndividual);
     }
     
-    protected void addRdfsLabelByType() {
+    public void addRdfsLabel() {
+
+        /* TODO First check if type is bf:Electronic and rdfs:label is
+         * "Electronic Resource." Then change rdfs:label (or assign new one) to
+         * work title + " - Electronic Resource." Can also add this as title.
+         * For other instances, go to the default first, then to instance title. 
+         * NB Electronic resources have no instance title.
+         * Another option: if we have a pre-processing step, the title and 
+         * bf:label could be added/modified there.
+         */       
+        assignDefaultRdfsLabel();
         
-        Literal rdfsLabel = getInstanceTitle();
-        
-        if (rdfsLabel != null) {
-            baseIndividual.addProperty(RDFS.label, rdfsLabel);
-        } else {
-            // Otherwise use the generic label.
-            super.addRdfsLabelByType();
+        // If no label was assigned in assignDefaultLabel()
+        if (! baseIndividual.hasProperty(RDFS.label)) { 
+            Literal rdfsLabel = getInstanceTitle();
+            
+            if (rdfsLabel != null) {
+                baseIndividual.addProperty(RDFS.label, rdfsLabel);
+            } else {
+                // Otherwise use the generic label.
+                super.addRdfsLabel();
+            }
         }
     }
     

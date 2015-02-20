@@ -14,14 +14,19 @@ public class BfTitle extends BfIndividual {
         super(baseIndividual);
     }
     
-    protected void addRdfsLabelByType() {
+    public void addRdfsLabel() {
         
-        Literal rdfsLabel = getRdfsLabel();
-        if (rdfsLabel != null) {
-            baseIndividual.addProperty(RDFS.label, rdfsLabel);
-        } else {
-            super.addRdfsLabelByType();
-        }            
+        assignDefaultRdfsLabel();
+        
+        // If no label was assigned in assignDefaultLabel()
+        if (! baseIndividual.hasProperty(RDFS.label)) { 
+            Literal rdfsLabel = getRdfsLabel();
+            if (rdfsLabel != null) {
+                baseIndividual.addProperty(RDFS.label, rdfsLabel);
+            } else {
+                super.addRdfsLabel();
+            }
+        }
     }
     
     protected Literal getRdfsLabel() {

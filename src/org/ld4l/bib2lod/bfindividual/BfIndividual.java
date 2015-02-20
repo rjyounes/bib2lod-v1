@@ -77,23 +77,30 @@ public class BfIndividual {
         }
         return authorityResourceUri;
     }
-
+    
     public void addRdfsLabel() {
+        
+        /* Setting the stage for subtypes to override the default assignment
+         * or a previous rdfs:label value, by trying to compute a new rdfs:label
+         * first, before assigning the default. In the case of an instance with
+         * rdfs:label "Electronic Resource", we want to change the rdfs:label
+         * to the title + " - Electronic Resource".
+         */  
+        assignDefaultRdfsLabel();
+        if (! baseIndividual.hasProperty(RDFS.label)) {
+            baseIndividual.addLiteral(RDFS.label, baseIndividual.getURI());
+        }
+    }
+    
+    protected void assignDefaultRdfsLabel() {
         
         if (! baseIndividual.hasProperty(RDFS.label)) {
             Property property = recordModel.getProperty(BF_LABEL_URI);
             RDFNode bfLabelNode = baseIndividual.getPropertyValue(property);
             if (bfLabelNode != null) {
-                Literal bfLabel = bfLabelNode.asLiteral();
-                baseIndividual.addLiteral(RDFS.label, bfLabel);                 
-            } else {                    
-                addRdfsLabelByType();
-            }
+                baseIndividual.addLiteral(RDFS.label, bfLabelNode.asLiteral());                 
+            } 
         }
-    }
-    
-    protected void addRdfsLabelByType() {
-        baseIndividual.addLiteral(RDFS.label, baseIndividual.getURI());
     }
     
     // Shared by bfWork and bfInstance

@@ -10,7 +10,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 /* TODO Create common superclass for BfWork and BfInstance, as a subclass of
  * BfIndividual. This would allow code-sharing between the two, without putting
  * common code into BfIndividual, which doesn't make sense. They could share
- * addRdfsLabelByType() and getTitleDatatypePropertyValue(), while each
+ * addRdfsLabel() and getTitleDatatypePropertyValue(), while each
  * having their own getWorkTitle() and getInstanceTitle(). Even parts of the
  * latter could be shared by using callouts to superclass methods and/or 
  * defining a common TITLE_OBJECT_PROPERTY with different values in the two 
@@ -22,18 +22,24 @@ public class BfWork extends BfIndividual {
         super(baseIndividual);
     }
     
-    protected void addRdfsLabelByType() {
+    public void addRdfsLabel() {
 
-        // Use the title value as the rdfs:label, if present.
-        Literal rdfsLabel = getWorkTitle();
-
-        if (rdfsLabel != null) {
-            baseIndividual.addProperty(RDFS.label, rdfsLabel);
-        } else {
-            // Otherwise use the generic value
-            super.addRdfsLabelByType();
+        assignDefaultRdfsLabel();
+        
+        // If no label was assigned in assignDefaultLabel()
+        if (! baseIndividual.hasProperty(RDFS.label)) { 
+            // Use the title value as the rdfs:label, if present.
+            Literal rdfsLabel = getWorkTitle();
+    
+            if (rdfsLabel != null) {
+                baseIndividual.addProperty(RDFS.label, rdfsLabel);
+            } else {
+                // Otherwise use the generic value
+                super.addRdfsLabel();
+            }
         }
     }
+        
     
     protected Literal getWorkTitle() {
      
