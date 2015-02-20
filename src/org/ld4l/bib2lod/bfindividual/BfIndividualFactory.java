@@ -29,7 +29,7 @@ public class BfIndividualFactory {
         } else if (baseIndividual.hasRDFType(BF_IDENTIFIER_URI)) {
             bfIndividual = new BfIdentifier(baseIndividual);
         } else if (baseIndividual.hasRDFType(MADSRDF_AUTHORITY_URI)) {
-            bfIndividual = new MadsrdfAuthority(baseIndividual);
+            bfIndividual = new MadsRdfAuthority(baseIndividual);
         } else { 
             bfIndividual = new BfIndividual(baseIndividual);
         }

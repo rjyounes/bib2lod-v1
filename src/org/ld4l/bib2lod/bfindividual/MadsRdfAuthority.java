@@ -7,11 +7,10 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
-public class MadsrdfAuthority extends BfIndividual {
+public class MadsRdfAuthority extends BfIndividual {
 
-    protected MadsrdfAuthority(Individual baseIndividual) {
+    protected MadsRdfAuthority(Individual baseIndividual) {
         super(baseIndividual);
-
     }
     
     public void addRdfsLabel() {
