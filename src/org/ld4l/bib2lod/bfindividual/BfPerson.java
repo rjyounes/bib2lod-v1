@@ -38,9 +38,7 @@ public class BfPerson extends BfIndividual  {
 
     protected Literal cleanLabel(Literal bfPersonLabel) {
 
-
         String label = bfPersonLabel.getLexicalForm();
-        System.out.println("in cleanLabel. label = " + label);
         String lang = bfPersonLabel.getLanguage();
 
         Matcher matcher = FINAL_PERIOD_PATTERN.matcher(label);
@@ -49,7 +47,6 @@ public class BfPerson extends BfIndividual  {
             //Prokofiev, Sergey, 1891-1953.
             // Syrgkanis, Vasileios, 1986-
             label = matcher.replaceFirst("");
-            System.out.println("after removing final period: " + label);
         }
         
         matcher = matcher.reset();
@@ -57,7 +54,6 @@ public class BfPerson extends BfIndividual  {
         if (matcher.find()) {
             // Meisburger, Stephen Paul.
             label = matcher.replaceFirst("");
-            System.out.println("after removing date: " + label);
         }
 
         // TODO Add transformations
