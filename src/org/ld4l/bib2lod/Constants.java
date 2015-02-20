@@ -10,6 +10,10 @@ public class Constants {
     
     public static final String LD4L_THESIS_URI = LD4L_CORE_NS + "Thesis";
     
+    public static final String LD4L_EXT_NS = "http://ld4l.org/ontology/ext#";
+    public static final String LD4L_AUTHOR_OF_URI = LD4L_EXT_NS + "authorOf";
+
+    
     /* BIBFRAME */  
     public static final String BIBFRAME_NS = "http://bibframe.org/vocab/";
     
@@ -90,5 +94,12 @@ public class Constants {
     public static final String RELATORS_THS_URI =
             "http://id.loc.gov/vocabulary/relators/ths";
 
+    
+    /* PAV */
+    public static final String PAV_NS = "http://purl.org/pav/";
+    
+    public static final String PAV_AUTHORED_BY_URI = PAV_NS + "authoredBy";
+            
+    
     
 }

@@ -45,9 +45,9 @@ public class BfInstance extends BfIndividual {
         // First look for the Title individual. Seems to be more reliably well-
         // formed, and we also get the subtitle.
         Resource instanceTitle = baseIndividual.getPropertyResourceValue(
-                ontModel.getProperty(BF_INSTANCE_TITLE_URI));
+                recordModel.getProperty(BF_INSTANCE_TITLE_URI));
         if (instanceTitle != null) {
-            Individual instanceTitleIndividual = ontModel.getIndividual(instanceTitle.getURI());
+            Individual instanceTitleIndividual = recordModel.getIndividual(instanceTitle.getURI());
             BfTitle bfInstanceTitle = new BfTitle(instanceTitleIndividual);
             titleLiteral = bfInstanceTitle.getRdfsLabel();            
         } else {
@@ -58,7 +58,7 @@ public class BfInstance extends BfIndividual {
         if (titleLiteral == null) {
             // Then look for the titleStatement datatype property.
             RDFNode titleStatement = baseIndividual.getPropertyValue(
-                    ontModel.getProperty(BF_TITLE_STATEMENT_URI));
+                    recordModel.getProperty(BF_TITLE_STATEMENT_URI));
             if (titleStatement != null) {
                 titleLiteral = titleStatement.asLiteral();              
             }

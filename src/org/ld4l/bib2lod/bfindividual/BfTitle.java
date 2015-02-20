@@ -28,12 +28,12 @@ public class BfTitle extends BfIndividual {
         
         Literal rdfsLabelLiteral = null;
         RDFNode titleValue = baseIndividual.getPropertyValue(
-                ontModel.getProperty(BF_TITLE_VALUE_URI));
+                recordModel.getProperty(BF_TITLE_VALUE_URI));
         if (titleValue != null) {
             Literal titleValueLiteral = titleValue.asLiteral();
             String titleString = titleValueLiteral.getLexicalForm();
             RDFNode subtitle = baseIndividual.getPropertyValue(
-                    ontModel.getProperty(BF_SUBTITLE_URI));
+                    recordModel.getProperty(BF_SUBTITLE_URI));
             String rdfsLabelString;
             if (subtitle != null) {
                 String subtitleString = subtitle.asLiteral().getLexicalForm();
@@ -43,9 +43,9 @@ public class BfTitle extends BfIndividual {
             }
             String lang = titleValueLiteral.getLanguage();
             if (lang.isEmpty()) {
-                rdfsLabelLiteral = ontModel.createLiteral(rdfsLabelString);
+                rdfsLabelLiteral = recordModel.createLiteral(rdfsLabelString);
             } else {
-                rdfsLabelLiteral = ontModel.createLiteral(rdfsLabelString, lang);
+                rdfsLabelLiteral = recordModel.createLiteral(rdfsLabelString, lang);
             }
         }
         return rdfsLabelLiteral;

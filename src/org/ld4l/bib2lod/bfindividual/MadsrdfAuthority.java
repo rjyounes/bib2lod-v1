@@ -16,7 +16,7 @@ public class MadsrdfAuthority extends BfIndividual {
     
     protected void addRdfsLabelByType() {
         RDFNode identifierValue = baseIndividual.getPropertyValue(
-                ontModel.getProperty(MADSRDF_AUTHORITATIVE_LABEL_URI));
+                recordModel.getProperty(MADSRDF_AUTHORITATIVE_LABEL_URI));
         if (identifierValue != null) {
             baseIndividual.addLiteral(RDFS.label, identifierValue.asLiteral());
         } else {

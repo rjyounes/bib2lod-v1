@@ -26,13 +26,13 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 public class BfIndividual {
 
     protected Individual baseIndividual;
-    protected OntModel ontModel;
+    protected OntModel recordModel;
     protected String baseUri;
       
     protected BfIndividual(Individual baseIndividual) {
         this.baseIndividual = baseIndividual; 
         // Store OntModel for convenience.
-        ontModel = baseIndividual.getOntModel();
+        recordModel = baseIndividual.getOntModel();
         // setOntModelAndType(baseIndividual);
         // The baseUri to be used for minting URIs for new Individuals.
         baseUri = computeBaseUri();
@@ -67,7 +67,7 @@ public class BfIndividual {
     protected String getAuthorityResourceUri() {
         String authorityResourceUri = null;
         Property bfHasAuthorityProperty = 
-                ontModel.getOntProperty(BF_HAS_AUTHORITY_URI);
+                recordModel.getOntProperty(BF_HAS_AUTHORITY_URI);
         if (baseIndividual.hasProperty(bfHasAuthorityProperty)) {
             Resource authorityResource = 
                     baseIndividual.getPropertyResourceValue(bfHasAuthorityProperty);
@@ -81,7 +81,7 @@ public class BfIndividual {
     public void addRdfsLabel() {
         
         if (! baseIndividual.hasProperty(RDFS.label)) {
-            Property property = ontModel.getProperty(BF_LABEL_URI);
+            Property property = recordModel.getProperty(BF_LABEL_URI);
             RDFNode bfLabelNode = baseIndividual.getPropertyValue(property);
             if (bfLabelNode != null) {
                 Literal bfLabel = bfLabelNode.asLiteral();
@@ -100,7 +100,7 @@ public class BfIndividual {
     protected Literal getTitleDatatypePropertyValue() {
         
         RDFNode title = baseIndividual.getPropertyValue(
-                ontModel.getProperty(BF_TITLE_PROPERTY_URI));
+                recordModel.getProperty(BF_TITLE_PROPERTY_URI));
         Literal titleLiteral = null;
         if (title != null) {
             titleLiteral = title.asLiteral();

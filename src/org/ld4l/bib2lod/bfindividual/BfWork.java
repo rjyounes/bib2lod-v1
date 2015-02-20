@@ -42,9 +42,9 @@ public class BfWork extends BfIndividual {
         // First look for the Title object. Seems to be more reliably well-
         // formed, and we also get the subtitle.
         Resource workTitle = baseIndividual.getPropertyResourceValue(
-                ontModel.getProperty(BF_WORK_TITLE_URI));
+                recordModel.getProperty(BF_WORK_TITLE_URI));
         if (workTitle != null) {
-            Individual workTitleIndividual = ontModel.getIndividual(workTitle.getURI());
+            Individual workTitleIndividual = recordModel.getIndividual(workTitle.getURI());
             BfTitle bfWorkTitle = new BfTitle(workTitleIndividual);
             titleLiteral = bfWorkTitle.getRdfsLabel();            
         } else {

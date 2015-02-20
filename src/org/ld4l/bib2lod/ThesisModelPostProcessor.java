@@ -4,7 +4,9 @@
 package org.ld4l.bib2lod;
 
 import static org.ld4l.bib2lod.Constants.BF_CREATOR_URI;
+import static org.ld4l.bib2lod.Constants.LD4L_AUTHOR_OF_URI;
 import static org.ld4l.bib2lod.Constants.LD4L_THESIS_URI;
+import static org.ld4l.bib2lod.Constants.PAV_AUTHORED_BY_URI;
 import static org.ld4l.bib2lod.Constants.RELATORS_THS_URI;
 
 import org.ld4l.bib2lod.bfindividual.BfIndividualFactory;
@@ -46,7 +48,22 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
                         recordModel.getProperty(BF_CREATOR_URI));
                        
         // Create a corresponding foaf:Person.
-        return bfPerson.createFoafPerson();
+        Individual foafPerson = bfPerson.createFoafPerson();
+        
+        // Create the relationships between the bfWork and the foafPerson.
+        bfWork.addProperty(recordModel.getProperty(PAV_AUTHORED_BY_URI), foafPerson);
+        
+        // Make the inverse assertion for ingest into systems that don't do
+        // inverse inferencing. 
+        /* NB if recordModel (or allRecords) were an inferencing OntModel, we
+         * wouldn't need to make the inverse assertion. See notes in 
+         * ModelPostProcessor.processRecords() and 
+         * ModelPostProcessor.processRecord().
+         */
+        foafPerson.addProperty(recordModel.getProperty(
+                LD4L_AUTHOR_OF_URI), bfWork);
+
+        return foafPerson;
         
     }
     

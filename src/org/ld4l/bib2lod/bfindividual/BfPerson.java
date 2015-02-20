@@ -1,6 +1,15 @@
 package org.ld4l.bib2lod.bfindividual;
 
-import static org.ld4l.bib2lod.Constants.*;
+import static org.ld4l.bib2lod.Constants.BF_AUTHORIZED_ACCESS_POINT_URI;
+import static org.ld4l.bib2lod.Constants.BF_HAS_AUTHORITY_URI;
+import static org.ld4l.bib2lod.Constants.BF_LABEL_URI;
+import static org.ld4l.bib2lod.Constants.FOAF_NAME_URI;
+import static org.ld4l.bib2lod.Constants.FOAF_PERSON_URI;
+import static org.ld4l.bib2lod.Constants.MADSRDF_IDENTIFIES_RWO_URI;
+import static org.ld4l.bib2lod.Constants.MADSRDF_IS_IDENTIFIED_BY_AUTHORITY_URI;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
@@ -17,17 +26,51 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  *
  */
 
+
 public class BfPerson extends BfIndividual  { 
 
+    private static final Pattern FINAL_PERIOD_PATTERN = Pattern.compile("(?<!\\s[A-Z])\\.$");
+    private static final Pattern DATE_PATTERN = Pattern.compile(",\\s[0-9].+$");
+    
     protected BfPerson(Individual baseIndividual) {
         super(baseIndividual);
     }
 
     protected Literal cleanLabel(Literal bfPersonLabel) {
+
+
+        String label = bfPersonLabel.getLexicalForm();
+        System.out.println("in cleanLabel. label = " + label);
+        String lang = bfPersonLabel.getLanguage();
+
+        Matcher matcher = FINAL_PERIOD_PATTERN.matcher(label);
+        
+        if (matcher.find()) {
+            //Prokofiev, Sergey, 1891-1953.
+            // Syrgkanis, Vasileios, 1986-
+            label = matcher.replaceFirst("");
+            System.out.println("after removing final period: " + label);
+        }
+        
+        matcher = matcher.reset();
+        matcher = DATE_PATTERN.matcher(label);
+        if (matcher.find()) {
+            // Meisburger, Stephen Paul.
+            label = matcher.replaceFirst("");
+            System.out.println("after removing date: " + label);
+        }
+
         // TODO Add transformations
         // Remove dates from label
-        // E.g., <bf:label>Prokofiev, Sergey, 1891-1953.</bf:label>
-        return bfPersonLabel; // TEMPORARY
+        // E.g., <bf:label></bf:label>
+        // remove period unless preceded by single letter
+        Literal newLabel;
+        if (lang != null) {
+            newLabel = recordModel.createLiteral(label, lang);
+        } else {
+            newLabel = recordModel.createLiteral(label);
+        }
+        return newLabel; 
     }    
     
     public Individual createFoafPerson() {
@@ -125,7 +168,7 @@ public class BfPerson extends BfIndividual  {
     protected void addRdfsLabelByType() {
         
         RDFNode authorizedAccessPoint = baseIndividual.getPropertyValue(
-                ontModel.getProperty(BF_AUTHORIZED_ACCESS_POINT_URI));
+                recordModel.getProperty(BF_AUTHORIZED_ACCESS_POINT_URI));
         if (authorizedAccessPoint != null) {
             baseIndividual.addLiteral(RDFS.label, authorizedAccessPoint.asLiteral());
         } else {
