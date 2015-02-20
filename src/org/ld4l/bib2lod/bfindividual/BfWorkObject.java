@@ -1,10 +1,8 @@
-package org.ld4l.bib2lod;
+package org.ld4l.bib2lod.bfindividual;
 
 import static org.ld4l.bib2lod.Constants.BF_TITLE_PROPERTY_URI;
 import static org.ld4l.bib2lod.Constants.BF_TITLE_URI;
 import static org.ld4l.bib2lod.Constants.BF_TITLE_VALUE_URI;
-
-import org.ld4l.bib2lod.bfindividual.BfIndividual;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.rdf.model.Literal;

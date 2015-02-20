@@ -2,8 +2,6 @@ package org.ld4l.bib2lod.bfindividual;
 
 import static org.ld4l.bib2lod.Constants.BF_WORK_TITLE_URI;
 
-import org.ld4l.bib2lod.BfWorkObject;
-
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Resource;
