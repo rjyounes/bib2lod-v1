@@ -33,7 +33,6 @@ public class BfIndividual {
         this.baseIndividual = baseIndividual; 
         // Store OntModel for convenience.
         recordModel = baseIndividual.getOntModel();
-        // setOntModelAndType(baseIndividual);
         // The baseUri to be used for minting URIs for new Individuals.
         baseUri = computeBaseUri();
     }    
