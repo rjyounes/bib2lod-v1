@@ -39,6 +39,7 @@ public class BfPerson extends BfIndividual  {
     protected Literal cleanLabel(Literal bfPersonLabel) {
 
         String label = bfPersonLabel.getLexicalForm();
+        String originalLabel = label;
         String lang = bfPersonLabel.getLanguage();
 
         Matcher matcher = FINAL_PERIOD_PATTERN.matcher(label);
@@ -56,10 +57,10 @@ public class BfPerson extends BfIndividual  {
             label = matcher.replaceFirst("");
         }
 
-        // TODO Add transformations
-        // Remove dates from label
-        // E.g., <bf:label></bf:label>
-        // remove period unless preceded by single letter
+        if (label.equals(originalLabel)) {
+            return bfPersonLabel;
+        }
+        
         Literal newLabel;
         if (lang != null) {
             newLabel = recordModel.createLiteral(label, lang);
