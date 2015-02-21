@@ -5,6 +5,7 @@ package org.ld4l.bib2lod.postprocessor;
 
 import static org.ld4l.bib2lod.postprocessor.Constants.BF_CREATOR_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.BF_DISSERTATION_INSTITUTION_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_HAS_AUTHORITY_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.BF_LABEL_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.BF_ORGANIZATION_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.LD4L_AUTHOR_OF_URI;
@@ -37,9 +38,9 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
       
     protected void processRecord() {
         assignThesisType();
-        linkToFoafOrganizationDissertationInstitution();
+        linkToFoafOrganization();
         createFoafPersonCreator();
-        createFoafPersonAdvisor();
+        linkToFoafPersonAdvisor();
     }   
     
     private void assignThesisType() {
@@ -51,12 +52,13 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
     }
     
     /** 
-     * Dedupe the institution. If a previous institution of the same name is
-     * found, remove this one, and relink the work to the existing one.
+     * Dedupe the dissertaton institution. If a previous institution of the same 
+     * name is found, remove this one, and relink the work to the existing one.
      * Otherwise, create a foaf:Organization as the related RWO. For now, we
-     * only have the bf:label to use for deduping.
+     * only have the bf:label to use for deduping, which is sufficient for the
+     * thesis data set, but it needs to be more sophisticated.
      */
-    private Individual linkToFoafOrganizationDissertationInstitution() {
+    private Individual linkToFoafOrganization() {
 
         // Get the bf:dissertationInstitution property that links the bfWork
         // to the institution.
@@ -70,8 +72,7 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
                         dissertationInstitutionProperty);
                 
         return bfInstitution.createFoafOrganization(bfWork,
-                dissertationInstitutionProperty, allRecords);
-        
+                dissertationInstitutionProperty, allRecords);        
     }
 
     // TODO See if this can also be handled by BfPerson with a new method
@@ -89,9 +90,10 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
         Individual foafPerson = bfPerson.createFoafPerson();
         
         // Create the relationships between the bfWork and the foafPerson.
-        bfWork.addProperty(recordModel.getProperty(PAV_AUTHORED_BY_URI), foafPerson);
+        bfWork.addProperty(recordModel.getProperty(
+                PAV_AUTHORED_BY_URI), foafPerson);
         
-        // Make the inverse assertion for ingest into systems that don't do
+        // Make the inverse assertion, for ingest into systems that don't do
         // inverse inferencing. 
         /* NB if recordModel (or allRecords) were an inferencing OntModel, we
          * wouldn't need to make the inverse assertion. See notes in 
@@ -102,15 +104,20 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
                 LD4L_AUTHOR_OF_URI), bfWork);       
     }
     
-    private Individual createFoafPersonAdvisor() {
-        
-        // Get the bfPerson advisor of this.bfWork.
-        BfPerson bfPerson = (BfPerson) 
-                BfIndividualFactory.createBfObjectIndividual(bfWork, 
-                        recordModel.getProperty(RELATORS_THS_URI));
+    private Individual linkToFoafPersonAdvisor() {
 
+        // Get the relators:ths property that links the bfWork to the advisor.
+        Property thesisAdvisorProperty = recordModel.getProperty(
+                RELATORS_THS_URI);
+ 
+        // Create a bfPerson wrapper to handle the linking between the bfWork
+        // bfWork and the thesis advisor.
+        BfPerson bfPerson = (BfPerson) BfIndividualFactory.
+                createBfObjectIndividual(bfWork, 
+                        thesisAdvisorProperty);
         
-        return bfPerson.createFoafPerson();
+        return bfPerson.createFoafPerson(bfWork,
+                thesisAdvisorProperty, allRecords);       
 
     }
 

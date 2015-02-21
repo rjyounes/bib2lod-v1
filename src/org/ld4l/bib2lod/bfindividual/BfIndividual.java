@@ -169,18 +169,16 @@ public class BfIndividual {
         return uri + "foaf";
     }
     
-    /** 
+    /**
      * Create a foaf Jena Individual (NB NOT a foaf:Individual) of type 
      * foafClass and related to the bf:Authority authority.
      * @param relatedIndividual
      * @param foafClass
      * @return
      */
-    protected Individual createFoafIndividual(Resource foafClass) {
-        
-        // Mint a URI for the new foaf:Organization.
-        String foafIndividualUri = getFoafUri();
-    
+    protected Individual createFoafIndividual(Resource foafClass, 
+            String foafIndividualUri) {
+
         // Create a foaf:Organization from the newly-
         // minted URI. It will get added to allRecords at the
         // end of processing the record.
@@ -204,9 +202,23 @@ public class BfIndividual {
         foafIndividual.addProperty(recordModel.getProperty(
                 FOAF_NAME_URI), baseIndividualLabel);
     
-        // Link the bf:Organization to the foaf:Organization.
+        // Link the bf:Authority to the foaf Individual.
         linkAuthorityToRwo(foafIndividual);
 
         return foafIndividual;
     }    
+    
+    /** 
+     * Create a foaf Jena Individual (NB NOT a foaf:Individual) of type 
+     * foafClass and related to the bf:Authority authority.
+     * @param foafClass
+     * @return
+     */
+    protected Individual createFoafIndividual(Resource foafClass) {
+        
+        // Mint a URI for the new foaf Individual.
+        String foafIndividualUri = getFoafUri();    
+        return createFoafIndividual(foafClass, foafIndividualUri);
+    }
+    
 }
