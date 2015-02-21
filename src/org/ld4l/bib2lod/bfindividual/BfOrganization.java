@@ -24,13 +24,17 @@ public class BfOrganization extends BfIndividual {
     //     Uses bf:label, so just use superclass method.
     // }
     
-    /** Create or re-use a foaf:Organization based on the linkingProperty.
+    /** 
+     * Create or re-use a foaf:Organization based on the linkingProperty. The
+     * baseIndividual is linked to the bfWork via this property.
      * 
-     * For example, create a foaf:Organization based on the bf:Organization
-     * that is linked to the bfWork via the bf:dissertationInstitution
+     * For example, create or re-use a foaf:Organization based on the 
+     * bf:Organization linked to the bfWork via the bf:dissertationInstitution
      * property.
      * 
-     * Requires deduping of organizations in the union Model.
+     * Requires deduping of organizations in the union Model. For now the 
+     * deduping is vastly oversimplified and based on the limited thesis data
+     * set. Needs to made much more sophisticated.
      */
     public Individual createFoafOrganization(Individual bfWork, Property 
             linkingProperty, OntModel allRecords) {
@@ -48,20 +52,25 @@ public class BfOrganization extends BfIndividual {
         Resource foafOrganizationClass = 
                 recordModel.getResource(FOAF_ORGANIZATION_URI);
         
-        // Get the bf:label of the object
+        // Get the bf:label of the baseIndividual, which is used to dedupe
+        // the bf:Organizations.
         RDFNode baseIndividualLabelNode = 
                 baseIndividual.getPropertyValue(bfLabelProperty); 
 
-        // Get the object's label.
         if (baseIndividualLabelNode != null) {
 
             String baseIndividualLabel = 
                     baseIndividualLabelNode.asLiteral().getLexicalForm();
             
-            // Determine whether this institution has been seen before,
-            // based on bf:label matching.
+            // Determine whether this institution already exists in the data 
+            // set, based on bf:label matching.
             // NB This is a vastly simplified version of deduping 
-            // institutions that works for the thesis data at hand.
+            // institutions that works for the thesis data at hand. Also, in
+            // the real world we'd need to check against existing data that's
+            // already been read into a designated triplestore, if one exists.
+            // TODO Move to separate method BfOrganization.dedupe().
+            // TODO Could also try combining with BfPerson deduping, the
+            // matching criteria work differently.
             
             // Iterate through the bf:Organizations.
             ExtendedIterator<Individual> bfOrganizations = 
@@ -86,7 +95,9 @@ public class BfOrganization extends BfIndividual {
                     // organization.
                     if (baseIndividualLabel.equals(organizationLabel)) {
 
-                        // Find the related foaf:Organization to return.
+                        // Find the related foaf:Organization to return, based
+                        // on the URI that would have been minted when it was
+                        // created.
                         String foafOrganizationUri = 
                                 getFoafUri(bfOrganization.getURI());
                         foafOrganization = allRecords.getIndividual(
