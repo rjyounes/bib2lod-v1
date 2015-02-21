@@ -75,10 +75,6 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
                 dissertationInstitutionProperty, allRecords);        
     }
 
-    // TODO See if this can also be handled by BfPerson with a new method
-    // createFoafPerson(bfCreatorProperty, pavAuthoredByProperty).
-    // (First property links bfWork to bf:Person, second property links
-    // bfWork to new foaf:Person. 
     private void createFoafPersonCreator() {
  
         // Get the bfPerson creator of this.bfWork.

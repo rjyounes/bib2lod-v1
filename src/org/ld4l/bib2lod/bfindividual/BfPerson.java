@@ -97,12 +97,17 @@ public class BfPerson extends BfIndividual  {
          * <bf:hasAuthority 
          * rdf:resource="http://vivo.cornell.edu/individual/individual23258"/>
          * 
-         * then the getURI() method returns null, which is what we want. That is 
-         * the case where we'll mint a new URI ending in "foaf".
+         * then the getURI() method returns null. That is the case where we'll 
+         * mint a new URI ending in "foaf".
+         * 
          */
-        // If the bf:Person has an authority resource with a URI, use that 
-        // as the foaf:Person URI. Otherwise, create a new URI for the 
-        // foaf:Person.
+        
+        /*
+         * If the bf:Person has an authority resource with a URI, use that 
+         * as the foaf:Person URI. Otherwise, create a new URI for the 
+         * foaf:Person. This preserves URIs in external namespaces, such as 
+         * VIVO.
+         */
         String foafPersonUri = getAuthorityResourceUri();
         if (foafPersonUri == null) {
             foafPersonUri = getFoafUri();            
