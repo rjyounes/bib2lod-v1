@@ -4,16 +4,25 @@
 package org.ld4l.bib2lod.postprocessor;
 
 import static org.ld4l.bib2lod.postprocessor.Constants.BF_CREATOR_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_DISSERTATION_INSTITUTION_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_LABEL_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_ORGANIZATION_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.LD4L_AUTHOR_OF_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.LD4L_THESIS_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.PAV_AUTHORED_BY_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.RELATORS_THS_URI;
 
 import org.ld4l.bib2lod.bfindividual.BfIndividualFactory;
+import org.ld4l.bib2lod.bfindividual.BfOrganization;
 import org.ld4l.bib2lod.bfindividual.BfPerson;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
  * @author rjy7
@@ -22,12 +31,13 @@ import com.hp.hpl.jena.ontology.OntModel;
 class ThesisModelPostProcessor extends ModelPostProcessor {
 
     protected ThesisModelPostProcessor(
-            OntModel recordModel, Individual bfWork) {
-        super(recordModel, bfWork);
+            Individual bfWork, OntModel recordModel, OntModel allRecords) {
+        super(bfWork, recordModel, allRecords);
     }    
       
     protected void processRecord() {
         assignThesisType();
+        linkToFoafOrganizationDissertationInstitution();
         createFoafPersonCreator();
         createFoafPersonAdvisor();
     }   
@@ -39,8 +49,36 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
         // bfWork.addRDFType(recordModel.getProperty(LD4L_THESIS_URI));
         bfWork.addOntClass(recordModel.getProperty(LD4L_THESIS_URI));
     }
+    
+    /** 
+     * Dedupe the institution. If a previous institution of the same name is
+     * found, remove this one, and relink the work to the existing one.
+     * Otherwise, create a foaf:Organization as the related RWO. For now, we
+     * only have the bf:label to use for deduping.
+     */
+    private Individual linkToFoafOrganizationDissertationInstitution() {
 
-    private Individual createFoafPersonCreator() {
+        // Get the bf:dissertationInstitution property that links the bfWork
+        // to the institution.
+        Property dissertationInstitutionProperty = recordModel.getProperty(
+                BF_DISSERTATION_INSTITUTION_URI);
+        
+        // Create a bfOrganization wrapper to handle the linking between
+        // bfWork and the dissertation institution.
+        BfOrganization bfInstitution = (BfOrganization) BfIndividualFactory.
+                createBfObjectIndividual(bfWork, 
+                        dissertationInstitutionProperty);
+                
+        return bfInstitution.createFoafOrganization(bfWork,
+                dissertationInstitutionProperty, allRecords);
+        
+    }
+
+    // TODO See if this can also be handled by BfPerson with a new method
+    // createFoafPerson(bfCreatorProperty, pavAuthoredByProperty).
+    // (First property links bfWork to bf:Person, second property links
+    // bfWork to new foaf:Person. 
+    private void createFoafPersonCreator() {
  
         // Get the bfPerson creator of this.bfWork.
         BfPerson bfPerson = (BfPerson) 
@@ -61,10 +99,7 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
          * ModelPostProcessor.processRecord().
          */
         foafPerson.addProperty(recordModel.getProperty(
-                LD4L_AUTHOR_OF_URI), bfWork);
-
-        return foafPerson;
-        
+                LD4L_AUTHOR_OF_URI), bfWork);       
     }
     
     private Individual createFoafPersonAdvisor() {
@@ -74,9 +109,8 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
                 BfIndividualFactory.createBfObjectIndividual(bfWork, 
                         recordModel.getProperty(RELATORS_THS_URI));
 
-        Individual foafPerson = bfPerson.createFoafPerson();
+        return bfPerson.createFoafPerson();
 
-        return foafPerson;
     }
 
 }

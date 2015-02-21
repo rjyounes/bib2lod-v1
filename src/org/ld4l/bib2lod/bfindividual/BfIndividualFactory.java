@@ -2,6 +2,7 @@ package org.ld4l.bib2lod.bfindividual;
 
 import static org.ld4l.bib2lod.postprocessor.Constants.BF_IDENTIFIER_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.BF_INSTANCE_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.BF_ORGANIZATION_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.BF_PERSON_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.BF_TITLE_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.BF_WORK_URI;
@@ -30,6 +31,8 @@ public class BfIndividualFactory {
             bfIndividual = new BfIdentifier(baseIndividual);
         } else if (baseIndividual.hasRDFType(MADSRDF_AUTHORITY_URI)) {
             bfIndividual = new MadsRdfAuthority(baseIndividual);
+        } else if (baseIndividual.hasRDFType(BF_ORGANIZATION_URI)) {
+             bfIndividual = new BfOrganization(baseIndividual); 
         } else { 
             bfIndividual = new BfIndividual(baseIndividual);
         }
@@ -40,13 +43,13 @@ public class BfIndividualFactory {
     /**
      * Return a BfIndividual based on the baseIndividual which is the object of
      * the specified subject and property.
-     * TODO Do we need to deal with the case where there's more than one such 
-     * object, or will that not arise in this context?
+     * TODO Deal with the case where there's more than one such object.
      * @param subject
      * @param property
      * @return
      */
-    public static BfIndividual createBfObjectIndividual(Individual subject, Property property) {
+    public static BfIndividual createBfObjectIndividual(
+            Individual subject, Property property) {
         
         OntModel ontModel = subject.getOntModel();
         
@@ -57,6 +60,7 @@ public class BfIndividualFactory {
         String resourceUri = objectResource.getURI();
         Individual object = ontModel.getIndividual(resourceUri);
         
+        // Create a BfIndividual wrapper.
         return createBfIndividual(object);
     }
 

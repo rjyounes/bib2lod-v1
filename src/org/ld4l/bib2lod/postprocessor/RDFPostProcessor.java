@@ -10,6 +10,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 public class RDFPostProcessor {
     
     public static String LOCAL_NAMESPACE;
+    protected static OntModel allRecords; 
     
     public RDFPostProcessor(String localNamespace) {
         LOCAL_NAMESPACE = localNamespace;
@@ -27,7 +28,7 @@ public class RDFPostProcessor {
          * to true or we use removeSubModel(Model). Without rebinding inferences
          * to recordModel, it won't work anyway.
          */
-        OntModel allRecords = 
+        allRecords = 
                 ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM); 
         
         for (InputStream record : records) {
@@ -61,7 +62,8 @@ public class RDFPostProcessor {
         recordModel.read(record, LOCAL_NAMESPACE, null);
         
         ModelPostProcessor p = 
-                ModelPostProcessorFactory.createModelPostProcessor(recordModel);                       
+                ModelPostProcessorFactory.createModelPostProcessor(
+                        recordModel, allRecords);                       
 
         if (p == null) {
             return null;

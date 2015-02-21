@@ -26,7 +26,8 @@ public class Constants {
             BIBFRAME_NS + "Identifier";
     public static final String BF_PERSON_URI = BIBFRAME_NS + "Person";
     public static final String BF_ELECTRONIC_URI = BIBFRAME_NS + "Electronic";
-
+    public static final String BF_ORGANIZATION_URI = 
+            BIBFRAME_NS + "Organization";
     
     /* BIBFRAME object properties */    
     public static final String BF_CREATOR_URI  = BIBFRAME_NS + "creator"; 
@@ -40,7 +41,8 @@ public class Constants {
             BIBFRAME_NS + "hasInstance";
     public static final String BF_INSTANCE_OF_URI = 
             BIBFRAME_NS + "instanceOf";
-    
+    public static final String BF_DISSERTATION_INSTITUTION_URI =
+            BIBFRAME_NS + "dissertationInstitution";
                 
     /* BIBFRAME datatype properties */   
     public static final String BF_LABEL_URI = BIBFRAME_NS + "label";
@@ -61,7 +63,7 @@ public class Constants {
     
     /* FOAF classes */
     public static final String FOAF_PERSON_URI = FOAF_NS + "Person";
-
+    public static final String FOAF_ORGANIZATION_URI = FOAF_NS + "Organization";
     
     /* FOAF datatype properties */
     public static final String FOAF_NAME_URI = FOAF_NS + "name";

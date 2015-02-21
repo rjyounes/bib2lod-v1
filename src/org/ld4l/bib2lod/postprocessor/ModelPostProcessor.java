@@ -22,23 +22,27 @@ abstract class ModelPostProcessor {
     
     protected Individual bfWork;
     protected OntModel recordModel;
+    protected OntModel allRecords;
     
     // TBD if these are needed
-    protected OntModel assertionsModel;        
-    protected OntModel retractionsModel;
+    // protected OntModel assertionsModel;        
+    // protected OntModel retractionsModel;
     
     protected ModelPostProcessor(
-            OntModel recordModel, Individual bfWork) {
+            Individual bfWork, OntModel recordModel, OntModel allRecords) {
         
+        this.bfWork = bfWork;        
         this.recordModel = recordModel;
-        this.bfWork = bfWork;
+        this.allRecords = allRecords;
+
+        
         
         // Are we going to need this? Perhaps all statements are added via
         // the Individual.
-        assertionsModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+        // assertionsModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         // Are we going to need this? There may not be any statements to retract.
         // If there are, they may all be retracted via the Individual.
-        retractionsModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+        // retractionsModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
     }
     
     protected OntModel getOntModel() {
@@ -141,9 +145,9 @@ abstract class ModelPostProcessor {
      * from the original record.
      * 
      */
-    protected void applyModelChanges() {
-        recordModel.add(assertionsModel);
-    }
+    // protected void applyModelChanges() {
+    //     recordModel.add(assertionsModel);
+    // }
     
 
     

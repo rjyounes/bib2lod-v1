@@ -14,7 +14,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 class ModelPostProcessorFactory  {
    
     protected static ModelPostProcessor createModelPostProcessor(
-            OntModel recordModel) {
+            OntModel recordModel, OntModel allRecords) {
         
         // A single record may include multiple bf:Works: the primary Work may
         // be related to other Works.  
@@ -41,7 +41,7 @@ class ModelPostProcessorFactory  {
 
             // Additional Works included in the record are processed with the
             // primary Work, so don't continue iterating through Works.
-            return new ThesisModelPostProcessor(recordModel, bfWork);
+            return new ThesisModelPostProcessor(bfWork, recordModel, allRecords);
         }
         return null;
     }

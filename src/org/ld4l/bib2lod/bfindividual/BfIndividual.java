@@ -5,6 +5,8 @@ import static org.ld4l.bib2lod.postprocessor.Constants.BF_LABEL_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.BF_TITLE_PROPERTY_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.BF_TITLE_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.BF_TITLE_VALUE_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.MADSRDF_IDENTIFIES_RWO_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.MADSRDF_IS_IDENTIFIED_BY_AUTHORITY_URI;
 import static org.ld4l.bib2lod.postprocessor.RDFPostProcessor.LOCAL_NAMESPACE;
 
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +29,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  */
 public class BfIndividual {
 
+ 
     protected Individual baseIndividual;
     protected OntModel recordModel;
     protected String baseUri;
@@ -65,13 +68,20 @@ public class BfIndividual {
         return LOCAL_NAMESPACE + localName;
     }
     
+    /**
+     * Return the URI of the authority linked to this.baseIndividual by
+     * the bf:hasAuthority property. For example, a bf:Person bf:hasAuthority
+     * bf:Authority - return the URI of the bf:Authority individual.
+     * @return
+     */
     protected String getAuthorityResourceUri() {
         String authorityResourceUri = null;
         Property bfHasAuthorityProperty = 
                 recordModel.getOntProperty(BF_HAS_AUTHORITY_URI);
         if (baseIndividual.hasProperty(bfHasAuthorityProperty)) {
-            Resource authorityResource = 
-                    baseIndividual.getPropertyResourceValue(bfHasAuthorityProperty);
+            Resource authorityResource = baseIndividual.
+                    getPropertyResourceValue(bfHasAuthorityProperty);
+                    
             // TODO Should this be limited to external URIs, or should we 
             // include internal ones as well? Seems like the latter.
             authorityResourceUri = authorityResource.getURI();
@@ -103,9 +113,6 @@ public class BfIndividual {
             } 
         }
     }
-    
-
-
 
     protected Literal getNewLiteral(Literal original, String newLexicalForm) {
         Literal newLiteral = null;
@@ -119,5 +126,42 @@ public class BfIndividual {
         return newLiteral;
         
     }    
+    
+    /**
+     * Link the baseIndividual (a bf:Authority, such as bf:Person, 
+     * bf:Organization, etc. to a real world object.
+     *
+     * @param individual
+     * @param RWO
+     */
+    // Note: if we need to link an Authority other than baseIndividual to an
+    // RWO, pass in Individual authority as well.
+    protected void linkAuthorityToRwo(Individual RWO) {
+        
+        Property authorityToRwoProperty = recordModel.getProperty(
+                MADSRDF_IDENTIFIES_RWO_URI);
+        
+        Property RwoToAuthorityProperty = recordModel.getProperty(
+                MADSRDF_IS_IDENTIFIED_BY_AUTHORITY_URI);
+                
+        RWO.addProperty(RwoToAuthorityProperty, baseIndividual);
+        
+        // Make the inverse assertion for ingest into systems that don't do
+        // inverse inferencing. 
+        /* NB if recordModel (or allRecords) were an inferencing OntModel, we
+         * wouldn't need to make the inverse assertion. See notes in 
+         * ModelPostProcessor.processRecords() and 
+         * ModelPostProcessor.processRecord().
+         */
+         baseIndividual.addProperty(authorityToRwoProperty, RWO);
+
+    }
+    
+    // Mint or create a foafUri for the foaf Individual related to the
+    // baseIndividual.
+    protected String getFoafUri() {
+        return baseUri + "foaf";
+    }
+    
     
 }

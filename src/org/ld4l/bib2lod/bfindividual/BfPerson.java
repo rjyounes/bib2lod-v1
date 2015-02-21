@@ -69,10 +69,11 @@ public class BfPerson extends BfIndividual  {
         }
         return newLabel; 
     }    
-    
+    /**
+     * Create a foaf:Person from the bf:Authority, and link the two together.
+     * @return
+     */
     public Individual createFoafPerson() {
-
-        OntModel ontModel = baseIndividual.getOntModel();
 
         /* 
          * If the baseIndividual hasAuthority to an external URI, use that
@@ -95,19 +96,25 @@ public class BfPerson extends BfIndividual  {
          * then the getURI() method returns null, which is what we want. That is 
          * the case where we'll mint a new URI ending in "foaf".
          */
+        // If the bf:Person has an authority resource with a URI, use that 
+        // as the foaf:Person URI. Otherwise, create a new URI for the 
+        // foaf:Person.
         String foafPersonUri = getAuthorityResourceUri();
         if (foafPersonUri == null) {
-            foafPersonUri = baseUri + "foaf";
+            foafPersonUri = getFoafUri();            
         }
         
         Individual foafPerson = 
-                ontModel.createIndividual(
-                        foafPersonUri, ontModel.getProperty(FOAF_PERSON_URI));
+                recordModel.createIndividual(
+                        foafPersonUri, recordModel.getResource(FOAF_PERSON_URI));
         
-
+        // TODO IMPORTANT need to pass in the property. Call it linkingProperty
+        // here
+        
         RDFNode bfCreatorNode = baseIndividual.getPropertyValue(
-                ontModel.getProperty(BF_LABEL_URI));
+                recordModel.getProperty(BF_LABEL_URI));
 
+          // All following should only be done if bfCreatorNode is not null
         if (bfCreatorNode != null) {
             Literal bfCreatorLabel = bfCreatorNode.asLiteral();
             // Remove dates from label
@@ -115,22 +122,13 @@ public class BfPerson extends BfIndividual  {
             // this data from that resource. Requires a call out to that
             // namespace (e.g., to the SPARQL endpoint).
             Literal foafPersonName = cleanLabel(bfCreatorLabel);
-            foafPerson.addProperty(ontModel.getProperty(FOAF_NAME_URI), foafPersonName);
+            foafPerson.addProperty(recordModel.getProperty(
+                    FOAF_NAME_URI), foafPersonName);
             foafPerson.addProperty(RDFS.label, foafPersonName);
         }
 
-        foafPerson.addProperty(ontModel.getProperty(
-                MADSRDF_IS_IDENTIFIED_BY_AUTHORITY_URI), baseIndividual);
-        
-        // Make the inverse assertion for ingest into systems that don't do
-        // inverse inferencing. 
-        /* NB if recordModel (or allRecords) were an inferencing OntModel, we
-         * wouldn't need to make the inverse assertion. See notes in 
-         * ModelPostProcessor.processRecords() and 
-         * ModelPostProcessor.processRecord().
-         */
-         baseIndividual.addProperty(ontModel.getProperty(
-                 MADSRDF_IDENTIFIES_RWO_URI), foafPerson);
+        // Link the bf:Person to the foaf:Person.
+        linkAuthorityToRwo(foafPerson);
         
         // Remove the bf:hasAuthority relationship to the foaf:Person, because
         // a foaf:Person is not an Authority.  We've just added the appropriate
@@ -151,16 +149,22 @@ public class BfPerson extends BfIndividual  {
          *        <madsrdf:authoritativeLabel>Royer, Caisa Elizabeth.</madsrdf:authoritativeLabel>
          *    </rdf:Description>
          */
+        // TODO It's possible that we ALWAYS want to do this after we link the
+        // foaf:Person to the baseIndividual (Authority). In that case, move to
+        // linkAuthorityToRwo(). In the current thesis data, it only applies
+        // to Persons.
         Property bfHasAuthorityProperty = 
-                ontModel.getProperty(BF_HAS_AUTHORITY_URI);
+                recordModel.getProperty(BF_HAS_AUTHORITY_URI);
         Resource authority = baseIndividual.getPropertyResourceValue(
                 bfHasAuthorityProperty);
         if (authority != null && authority.getURI() == foafPerson.getURI()) {
             baseIndividual.removeProperty(bfHasAuthorityProperty, authority);
-        }        
+        }  
         
         return foafPerson;
+
     }
+    
 
     public void addRdfsLabel() {
         
