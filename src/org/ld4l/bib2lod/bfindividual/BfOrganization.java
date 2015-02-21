@@ -2,6 +2,7 @@ package org.ld4l.bib2lod.bfindividual;
 
 import static org.ld4l.bib2lod.postprocessor.Constants.BF_LABEL_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.BF_ORGANIZATION_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.FOAF_NAME_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.FOAF_ORGANIZATION_URI;
 
 import com.hp.hpl.jena.ontology.Individual;
@@ -83,7 +84,7 @@ public class BfOrganization extends BfIndividual {
                 while (bfOrganizations.hasNext()) {
 
                     Individual bfOrganization = bfOrganizations.next();
-                    
+
                     RDFNode organizationLabelNode = 
                             bfOrganization.getPropertyValue(bfLabelProperty);
 
@@ -95,11 +96,17 @@ public class BfOrganization extends BfIndividual {
                         // the existing organization, assume they are the same
                         // organization.
                         if (objectLabel.equals(organizationLabel)) {
+
+                            // Find the related foaf:Organization to return.
+                            String foafOrganizationUri = 
+                                    getFoafUri(bfOrganization.getURI());
+                            foafOrganization = allRecords.getIndividual(
+                                    foafOrganizationUri);
                             
                             // Remove the current organization from the 
                             // recordModel.
                             objectIndividual.remove();
-                            
+
                             // Link the bfWork to the existing organization 
                             // instead.
                             bfWork.addProperty(linkingProperty, bfOrganization);
@@ -111,19 +118,18 @@ public class BfOrganization extends BfIndividual {
                             // TODO Should probably check to make sure there is
                             // one, though we definitely should have created it
                             // the first time we saw this bf:Organization.
-                            foafOrganization = allRecords.createIndividual(getFoafUri(),
-                                    foafOrganizationClass);
                             break;
                         } 
                     }                   
                 } // end while loop
-              
+
+                // TODO Put this part in separate function; pass in 
+                // objectIndividual.
                 // If no foafOrganization, create a new one and link it to the
                 // current bf:Organization as well as to the bfWork. Two cases: 
                 // (1) No match to an existing organization was found.
                 // (2) There are no existing organizations.
                 if (foafOrganization == null) {
-                      
                     // Mint a URI for the new foaf:Organization.
                     String foafOrganizationUri = getFoafUri();
 
@@ -135,6 +141,8 @@ public class BfOrganization extends BfIndividual {
                     
                     // Add an rdfs:label to the foaf:Organization.
                     foafOrganization.addProperty(RDFS.label, objectLabel);
+                    foafOrganization.addProperty(recordModel.getProperty(
+                            FOAF_NAME_URI), objectLabel);
          
                     // Link the bf:Organization to the foaf:Organization.
                     linkAuthorityToRwo(foafOrganization);
@@ -151,5 +159,9 @@ public class BfOrganization extends BfIndividual {
         
         return foafOrganization;
     }  
+    
+//    protected Individual createFoafOrganization(Individual bfIndividual) {
+//        
+//    }
 
 }

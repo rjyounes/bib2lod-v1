@@ -5,6 +5,7 @@ import static org.ld4l.bib2lod.postprocessor.Constants.BF_LABEL_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.BF_TITLE_PROPERTY_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.BF_TITLE_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.BF_TITLE_VALUE_URI;
+import static org.ld4l.bib2lod.postprocessor.Constants.FOAF_NAME_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.MADSRDF_IDENTIFIES_RWO_URI;
 import static org.ld4l.bib2lod.postprocessor.Constants.MADSRDF_IS_IDENTIFIED_BY_AUTHORITY_URI;
 import static org.ld4l.bib2lod.postprocessor.RDFPostProcessor.LOCAL_NAMESPACE;
@@ -160,8 +161,45 @@ public class BfIndividual {
     // Mint or create a foafUri for the foaf Individual related to the
     // baseIndividual.
     protected String getFoafUri() {
-        return baseUri + "foaf";
+        return getFoafUri(baseUri);
     }
+    
+    // Mint or create a foafUri based on the given URI.
+    protected String getFoafUri(String uri) {
+        return uri + "foaf";
+    }
+    
+    /** 
+     * Create a foaf Jena Individual (not a foaf:Individual) of type foafClass
+     * and related to the bf:Authority authority.
+     * @param relatedIndividual
+     * @param foafClass
+     * @return
+     */
+//    protected Individual createFoafIndividual(Individual authority, 
+//            Class foafClass) {
+//        
+//        // Mint a URI for the new foaf:Organization.
+//        String foafOrganizationUri = getFoafUri();
+//
+//        // Create a foaf:Organization from the newly-
+//        // minted URI. It will get added to allRecords at the
+//        // end of processing the record.
+//        Individual foafOrganization = recordModel.createIndividual(
+//                foafOrganizationUri, foafOrganizationClass);
+//        
+//        // Add an rdfs:label to the foaf:Organization.
+//        foafOrganization.addProperty(RDFS.label, objectLabel);
+//        foafOrganization.addProperty(recordModel.getProperty(
+//                FOAF_NAME_URI), objectLabel);
+//
+//        // Link the bf:Organization to the foaf:Organization.
+//        linkAuthorityToRwo(foafOrganization);
+//        
+//        // Add an rdfs:label to the bf:Organization, while we're
+//        // here and we have it.
+//        objectIndividual.addProperty(RDFS.label, objectLabel);
+//    }
     
     
 }

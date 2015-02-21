@@ -109,6 +109,7 @@ class ThesisModelPostProcessor extends ModelPostProcessor {
                 BfIndividualFactory.createBfObjectIndividual(bfWork, 
                         recordModel.getProperty(RELATORS_THS_URI));
 
+        
         return bfPerson.createFoafPerson();
 
     }
