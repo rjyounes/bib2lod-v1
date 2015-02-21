@@ -126,11 +126,10 @@ public class BfOrganization extends BfIndividual {
             // If no foafOrganization, create a new one and link it to the
             // current bf:Organization as well as to the bfWork. Two cases: 
             // (1) No match to an existing organization was found.
-            // (2) There are no existing organizations.
+            // (2) There are no prior existing organizations in the data.
             if (foafOrganization == null) {
                 
-                foafOrganization = createFoafOrganization(
-                        foafOrganizationClass);                        
+                foafOrganization = createFoafIndividual(foafOrganizationClass);                      
                 
             } // end creating new foaf:Organization
 
@@ -139,38 +138,6 @@ public class BfOrganization extends BfIndividual {
         return foafOrganization;
     }  
     
-    protected Individual createFoafOrganization(Resource foafClass) {
-                    
-        // Mint a URI for the new foaf:Organization.
-        String foafOrganizationUri = getFoafUri();
-    
-        // Create a foaf:Organization from the newly-
-        // minted URI. It will get added to allRecords at the
-        // end of processing the record.
-        Individual foafOrganization = recordModel.createIndividual(
-                foafOrganizationUri, foafClass);
 
-        // Get the bf:label Property
-        Property bfLabelProperty = recordModel.getProperty(BF_LABEL_URI);  
-        
-        // Get the bf:label String
-        RDFNode baseIndividualLabelNode = 
-                baseIndividual.getPropertyValue(bfLabelProperty); 
-        String baseIndividualLabel = 
-                baseIndividualLabelNode.asLiteral().getLexicalForm();
-        
-        // Add an rdfs:label to the bf:Organization, while we're
-        // here and we have it.
-        baseIndividual.addProperty(RDFS.label, baseIndividualLabel); 
-        
-        foafOrganization.addProperty(RDFS.label, baseIndividualLabel);
-        foafOrganization.addProperty(recordModel.getProperty(
-                FOAF_NAME_URI), baseIndividualLabel);
-    
-        // Link the bf:Organization to the foaf:Organization.
-        linkAuthorityToRwo(foafOrganization);
-
-        return foafOrganization;
-    }
 
 }

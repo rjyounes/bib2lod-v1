@@ -170,36 +170,43 @@ public class BfIndividual {
     }
     
     /** 
-     * Create a foaf Jena Individual (not a foaf:Individual) of type foafClass
-     * and related to the bf:Authority authority.
+     * Create a foaf Jena Individual (NB NOT a foaf:Individual) of type 
+     * foafClass and related to the bf:Authority authority.
      * @param relatedIndividual
      * @param foafClass
      * @return
      */
-//    protected Individual createFoafIndividual(Individual authority, 
-//            Class foafClass) {
-//        
-//        // Mint a URI for the new foaf:Organization.
-//        String foafOrganizationUri = getFoafUri();
-//
-//        // Create a foaf:Organization from the newly-
-//        // minted URI. It will get added to allRecords at the
-//        // end of processing the record.
-//        Individual foafOrganization = recordModel.createIndividual(
-//                foafOrganizationUri, foafOrganizationClass);
-//        
-//        // Add an rdfs:label to the foaf:Organization.
-//        foafOrganization.addProperty(RDFS.label, objectLabel);
-//        foafOrganization.addProperty(recordModel.getProperty(
-//                FOAF_NAME_URI), objectLabel);
-//
-//        // Link the bf:Organization to the foaf:Organization.
-//        linkAuthorityToRwo(foafOrganization);
-//        
-//        // Add an rdfs:label to the bf:Organization, while we're
-//        // here and we have it.
-//        objectIndividual.addProperty(RDFS.label, objectLabel);
-//    }
+    protected Individual createFoafIndividual(Resource foafClass) {
+        
+        // Mint a URI for the new foaf:Organization.
+        String foafIndividualUri = getFoafUri();
     
+        // Create a foaf:Organization from the newly-
+        // minted URI. It will get added to allRecords at the
+        // end of processing the record.
+        Individual foafIndividual = recordModel.createIndividual(
+                foafIndividualUri, foafClass);
+
+        // Get the bf:label Property
+        Property bfLabelProperty = recordModel.getProperty(BF_LABEL_URI);  
+        
+        // Get the bf:label String
+        RDFNode baseIndividualLabelNode = 
+                baseIndividual.getPropertyValue(bfLabelProperty); 
+        String baseIndividualLabel = 
+                baseIndividualLabelNode.asLiteral().getLexicalForm();
+        
+        // Add an rdfs:label to the bf:Organization, while we're
+        // here and we have it.
+        baseIndividual.addProperty(RDFS.label, baseIndividualLabel); 
+        
+        foafIndividual.addProperty(RDFS.label, baseIndividualLabel);
+        foafIndividual.addProperty(recordModel.getProperty(
+                FOAF_NAME_URI), baseIndividualLabel);
     
+        // Link the bf:Organization to the foaf:Organization.
+        linkAuthorityToRwo(foafIndividual);
+
+        return foafIndividual;
+    }    
 }
