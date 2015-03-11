@@ -264,8 +264,7 @@ public class BfPerson extends BfIndividual  {
             // Remove the hasAuthority relation between the bf:Person and the
             // foaf:Person, since they are now linked by 
             // madsrdf:identifiesRWO and madsrdf:isIdentifiedByAuthority.
-            baseIndividual.removeProperty(bfHasAuthorityProperty, foafPerson);
-            
+            baseIndividual.removeProperty(bfHasAuthorityProperty, foafPerson);           
         }
 
         return foafPerson;

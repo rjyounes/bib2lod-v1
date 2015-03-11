@@ -19,23 +19,24 @@ public class RDFPostProcessor {
     public OntModel processRecords(List<InputStream> records) { 
         
         /* 
-         * Consider making this or recordModel an inferencing model, so we don't, 
-         * e.g., have to assert inverse property relations. Makes operations on
-         * the model more expensive, however. Check: when the ontologyModel is
-         * removed, does that remove all the inferences? Javadoc states that
-         * it is optional to "rebind any associated inferencing engine to the 
-         * new data (which may be an expensive operation)," (if rebind is set
-         * to true or we use removeSubModel(Model). Without rebinding inferences
-         * to recordModel, it won't work anyway.
+         * Consider making this or recordModel an inferencing model, so we 
+         * don't, e.g., have to assert inverse property relations. Makes 
+         * operations on the model more expensive, however. Check: when the 
+         * ontologyModel is removed, does that remove all the inferences? 
+         * Javadoc states that it is optional to "rebind any associated  
+         * inferencing engine to the new data (which may be an expensive 
+         * operation)," (if rebind is set to true or we use  
+         * removeSubModel(Model)). Without rebinding inferences to recordModel, 
+         * it won't work anyway.
          */
         allRecords = 
                 ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM); 
         
         for (InputStream record : records) {
-            OntModel processedRecordModel = processRecord(record);
+            OntModel recordModel = processRecord(record);
             // OK to call add if processedRecordModel is null, or test for
             // non-null value first?
-            allRecords.add(processedRecordModel);
+            allRecords.add(recordModel);
         }
         
         return allRecords;
@@ -50,15 +51,14 @@ public class RDFPostProcessor {
          * removed, does that remove all the inferences? Javadoc states that
          * it is optional to "rebind any associated inferencing engine to the 
          * new data (which may be an expensive operation)," (if rebind is set
-         * to true or we use removeSubModel(Model). Without rebinding inferences
-         * to recordModel, it won't work anyway.
+         * to true or we use removeSubModel(Model)). Without rebinding 
+         * inferences to recordModel, it won't work anyway.
          */
         OntModel recordModel = 
                 ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
 
-        // Third parameter = serialization. Currently using default RDF/XML.
-        // In future may want to specify as commandline option.
-        // Default serialization = RDF/XML.
+        // Third parameter = serialization. Currently supporting only the 
+        // default RDF/XML. In future may want to specify as commandline option.
         recordModel.read(record, LOCAL_NAMESPACE, null);
         
         ModelPostProcessor p = 
