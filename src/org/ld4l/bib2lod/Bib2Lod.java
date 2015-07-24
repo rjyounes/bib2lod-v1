@@ -49,7 +49,7 @@ public class Bib2Lod {
          
         List<InputStream> records = readFiles(readdir);
         
-        // Process the RDF input files and receive a union model for printing.
+        // Process the RDF input files and receive a union model for writing.
         RDFPostProcessor p = new RDFPostProcessor(localNamespace);
         Model allRecords = p.processRecords(records);
         
